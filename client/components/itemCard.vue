@@ -3,7 +3,7 @@
 				<vk-card class="vkcardbg" type="blank">
 					<!-- <img class="img-fluid" :src="item.logo" width="100" alt="Card image cap"> -->
 					<!-- <vk-card-title>{{item.name | capitalize}}</vk-card-title> -->
-					<vk-card-title>{{item.name | capitalize }}</vk-card-title>
+					<vk-card-title>{{ item.date | capitalize }}</vk-card-title>
 					<div>
 						<!-- <vk-button v-for="(group, index) in item.stack" :key="index" :type="`${tags[group]}`">{{ group }}</vk-button> -->
 					</div>

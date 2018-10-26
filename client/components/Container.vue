@@ -2,7 +2,7 @@
     <div class="uk-offcanvas-content thebg">
     <!-- <vk-grid gutter="small"> -->
         <!-- <app-leftbar class="uk-light theleftbar"></app-leftbar> -->
-        <!-- <app-searchpage class="thesearchpage" data-uk-height-viewport="expand:true"></app-searchpage> -->
+        <app-searchpage class="thesearchpage" data-uk-height-viewport="expand:true"></app-searchpage>
     <!-- </vk-grid> -->
     </div>
 </template>
@@ -40,9 +40,9 @@ export default {
     .thesearchpage{
         /* width:calc(100vw - 75px);
         margin-left:75px;*/
-        width: calc(100vw - 150px);
+        /* width: calc(100vw - 150px);
         margin-left: 60px;
-        padding-left: 38px;
+        padding-left: 38px; */
     }
 
 </style>

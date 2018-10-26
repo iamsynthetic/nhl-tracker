@@ -7,12 +7,16 @@ import VueLoading from 'vue-component-loading'
 import axios from 'axios'
 import VuikitIcons from '@vuikit/icons'
 import vueMoment from 'vue-moment'
+import vuescroll from 'vuescroll'
+
+import 'vuescroll/dist/vuescroll.css'
 
 Vue.use(VuikitIcons)
 
 Vue.use(vueMoment)
 Vue.use(VueLoading, config)
 Vue.use(axios)
+Vue.use(vuescroll)
 
 sync(store, router)
 
