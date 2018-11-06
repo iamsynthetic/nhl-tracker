@@ -1,33 +1,26 @@
 <template>
-  <div id="app">
+  <div class="stats">
     <app-header></app-header>
-    <!-- <h1>{{ title }}</h1>
-    <form @submit.prevent="addLink">
-      <input class="link-input" type="text" placeholder="Add a link" v-model="newLink" />
-    </form>
-    <ul>
-        <li v-for="(link, index) in links" :key="index">
-          {{ link }}
-          <button @click="removeLinks(index)" class="rm">Remove</button>
-        </li>
-    </ul>
-    <div class="right">
-      <stats />
-    </div> -->
-    <router-view></router-view>
+    <h1>A different compoennt</h1>
+    <p>there are currently {{ countLinks }} links</p>
+    <button @click="removeAllLinks">Remove all links</button>
+    <p>{{ msg }}</p>
   </div>
 </template>
 
 <script>
-// import Stats from './stats'
-// import { mapState, mapMutations, mapActions } from 'vuex'
-import Header from './Header.vue'
+import { mapGetters, mapMutations, mapActions } from 'vuex'
 
 export default {
-  name: 'App',
+  name: 'Stats',
+  computed:{
+    ...mapGetters([
+      'countLinks'
+    ])
+  },
   data(){
     return{
-      // newLink: ''
+      msg: ''
     }
   },
   created(){
@@ -52,30 +45,14 @@ export default {
         this.$Progress.finish()
       })
   },
-  computed:{
-    // ...mapState([
-    //   'title',
-    //   'links'
-    // ])
-  },
-  components: {
-    'appHeader': Header,
-    //Stats
-  },
-  methods: {
-    // ...mapMutations([
-    //   'ADD_LINK'
-    // ]),
-    // ...mapActions([
-    //   'removeLink'
-    // ]),
-    // addLink: function(){
-    //   this.ADD_LINK(this.newLink)
-    //   this.newLink = ''
-    // },
-    // removeLinks: function(link){
-    //   this.removeLink(link)
-    // }
+  methods:{
+    ...mapMutations(['REMOVE_ALL']),
+    ...mapActions(['removeAll']),
+    removeAllLinks(){
+      this.removeAll().then(() => {
+        this.msg = 'They have been removed'
+      })
+    }
   }
 };
 </script>
@@ -87,9 +64,35 @@ body {
     overflow-y:hidden;
 }
 
+// html {
+//   color:!important #ff0000;
+// }
+// body {
+//   margin: 0;
+//   color:!important #ff0000;
+//   font-size: 5rem;
+//   font-color:#ffffff;
+//   font-family: -apple-system, BlinkMacSystemFont,
+//                'avenir next', avenir,
+//                helvetica, 'helvetica neue',
+//                Ubuntu,
+//                'segoe ui', arial,
+//                sans-serif;
+// }
+
 #app {
   margin-top: 0px;
   height:100%;
   background-color:!important #ff0000;
+}
+
+button {
+  padding: 10px;
+  margin-top: 30px;
+  width: 100%;
+  background: none;
+  border: 1px solid lightgrey;
+  outline: 0;
+  cursor: pointer;
 }
 </style>

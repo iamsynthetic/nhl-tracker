@@ -44,7 +44,7 @@ let config = {
 }
 
 //might be better to abstract this to another file later on if this gets too big
-axios.defaults.baseURL = 'https://statsapi.web.nhl.com/api/v1/'
+// axios.defaults.baseURL = 'https://statsapi.web.nhl.com/api/v1/'
 
 Vue.prototype.$eventHub = new Vue();
 

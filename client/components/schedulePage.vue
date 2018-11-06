@@ -10,12 +10,12 @@
                   <v-subheader v-if="item.date">
                     {{ item.date }}
                   </v-subheader>
-                  <v-list-tile class="listtile-link" avatar @click="clickTextlink('matchup')">
+                  <v-list-tile class="listtile-link" avatar @click="clickTextlink('/matchup', item.games[0].teams.away.team.id, item.games[0].teams.home.team.id, item.date)">
                     <v-flex d-flex xs12>
                       <v-layout row wrap>
                         <v-flex d-flex xs12>
                           <v-flex d-flex xs2 sm1>
-                            <v-list-tile-avatar size="35" tile=false class='mt-1'>
+                            <v-list-tile-avatar size="35" tile class='mt-1'>
                                 <img class="littleavatar" :src="`../../static/logos/${item.games[0].teams.away.team.id}.png`" alt="team logo">
                             </v-list-tile-avatar>
                           </v-flex>
@@ -32,7 +32,7 @@
                         </v-flex>
                         <v-flex d-flex xs12>
                           <v-flex d-flex xs2 sm1>
-                            <v-list-tile-avatar size="35" tile=false class='mt-1'>
+                            <v-list-tile-avatar size="35" tile class='mt-1'>
                                 <img class="littleavatar" :src="`../../static/logos/${item.games[0].teams.home.team.id}.png`" alt="team logo">
                             </v-list-tile-avatar>
                           </v-flex>
@@ -62,11 +62,13 @@
 
 <script>
 
-import axios from 'axios';
-import vueMoment from 'vue-moment';
-import data from '../data/data';
-import vuescroll from 'vuescroll';
-import router from '../router';
+import axios from 'axios'
+import vueMoment from 'vue-moment'
+import data from '../data/data'
+import vuescroll from 'vuescroll'
+import router from '../router'
+import nhlService from '../services/nhlService'
+import { mapState, mapMutations, mapActions } from 'vuex'
 
 const easings = [
   'easeInQuad',
@@ -137,15 +139,14 @@ export default {
       teamid: "",
       nhldata: [],
       nhlschedule: [],
-      loading: false,
       pastgame: true,
       dateNow: 'the date here'
     };
   },
   created(){
     this.$eventHub.$on('filterdata', this.clickTextlink);
-    this.getNHLData();
-    this.getNHLSchedule(10);
+    //this.getNHLData();
+    this.getNHLSchedule();
   },
   mounted() {
     
@@ -159,37 +160,62 @@ export default {
       });
       return filters;
     },
-    testingComputed: function(){
-      return 'testing this now';
+    theteamid: function(){
+      //return store.state.teamid
+      return this.$store.state.hometeamid
     }
   },
   methods: {
-    getNHLData(){
-      console.log('nhl')
-      axios.get("teams/")
-        .then((response) => {
-          console.log('test');
-          this.loading = false;
-          console.log('test 2');
-          console.log('this.nhldata is: ' + this.nhldata)
-          this.nhldata = response.data;
-          console.log('test 3');
-          console.log(this.nhldata);
-        }, (error) => {
-          this.loading = false;
-        })
+    ...mapMutations(['CHANGE_HOME_TEAM, CHANGE_AWAY_TEAM', 'CHANGE_MATCHUP']),
+    ...mapActions(['changeHomeTeam', 'changeAwayTeam', 'changeMatchup']),
+    
+    changethehometeam(id){
+      this.changeHomeTeam(id);
+    },
+    changetheawayteam(id){
+      this.changeAwayTeam(id);
+    },
+    changethematchup(id){
+      this.changeMatchup(id);
+    },
+    // getNHLData(){
+    //   console.log('nhl')
+    //   axios.get("teams/")
+    //     .then((response) => {
+    //       console.log('test');
+    //       //this.loading = false;
+    //       console.log('test 2');
+    //       console.log('this.nhldata is: ' + this.nhldata)
+    //       this.nhldata = response.data;
+    //       console.log('test 3');
+    //       console.log(this.nhldata);
+    //     }, (error) => {
+    //       //this.loading = false;
+    //     })
+    // },
+
+    // getNHLSchedule(id){
+    //   this.teamid = id;
+    //   axios.get("schedule?teamId=" + id + "&startDate=2018-10-03&endDate=2019-04-06")
+    //     .then((response) => {
+    //       //this.loading = false;
+    //       console.log('this.nhlschedule is: ' + this.nhlschedule)
+    //       this.nhlschedule = response.data;
+    //     }, (error) => {
+    //       //this.loading = false;
+    //     })
+    // },
+
+    async getNHLData(){
+      console.log(this.theteamid);
+      const response = await nhlService.getATeam(this.theteamid)
+      this.nhldata = response.data
     },
 
-    getNHLSchedule(id){
-      this.teamid = id;
-      axios.get("schedule?teamId=" + id + "&startDate=2018-10-03&endDate=2019-04-06")
-        .then((response) => {
-          this.loading = false;
-          console.log('this.nhlschedule is: ' + this.nhlschedule)
-          this.nhlschedule = response.data;
-        }, (error) => {
-          this.loading = false;
-        })
+    async getNHLSchedule(){
+      console.log(this.theteamid);
+      const response = await nhlService.getTeamSchedule(this.theteamid)
+      this.nhlschedule = response.data
     },
 
     getTime(thedate){
@@ -210,17 +236,18 @@ export default {
         console.log('game not done show date');
       }
     },
-    clickTextlink(url){
-     console.log('teamid is: ' + this.teamid);
+    clickTextlink(url, awayteamid, hometeamid, matchupdate){
+     //console.log('teamid is: ' + this.teamid);
+      //need to set the state here
+      console.log('schedulepage url is: ' + url);
+      console.log('schedulepage awayteamid is: ' + awayteamid);
+      console.log('schedulepage hometeamid is: ' + hometeamid);
+      console.log('schedulepage matchupdate is: ' + matchupdate);
 
-     //do some tweenlite transitions maybe then call router
-     //onComplete:doRouter
-     //function doRouter(){
-     //    router.push(url, this.teamid);
-     //    console.log('hi');
-     //  }
-
-     router.push(url, this.teamid);
+      this.changethehometeam(hometeamid);
+      this.changetheawayteam(awayteamid);
+      this.changethematchup(matchupdate);
+     router.push(url);
     },
     onScroll (e) {
       this.offsetTop = e.target.scrollTop
