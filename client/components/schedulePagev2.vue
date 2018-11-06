@@ -63,9 +63,9 @@
 
 import axios from 'axios';
 import vueMoment from 'vue-moment';
-import itemCard from './itemCard';
 import data from '../data/data';
 import vuescroll from 'vuescroll';
+import router from '../router';
 
 const easings = [
   'easeInQuad',
@@ -82,48 +82,12 @@ const easings = [
   'easeInOutQuint'
 ];
 export default {
-  name: 'SearchPage',
+  name: 'SchedulePagev2',
   components: {
-    itemCard
+    // itemCard
   },
   data() {
     return {
-      ops: {
-        vuescroll: {
-          mode: 'native',
-          // scrollingX: this.pagingX,
-          // scrollingY: !this.pagingX,
-          paging: false,
-          zooming: false,
-          snapping: {
-              enable: false
-              // width: 100,
-              //height: 196
-          }
-        },
-        scroller: {
-          bouncing: true,
-          speedMultiplier: 2,
-          // penetrationDeceleration: 1.13,
-          // /** This configures the amount of change applied to acceleration when reaching boundaries  **/
-          // penetrationAcceleration: 1.18
-          //locking: true
-        },
-        scrollPanel: {
-          scrollingX: false,
-          easing: 'easeInOutQuart',
-          speed: 600
-          // padding: true,
-        },
-        rail:{
-          // gutterOfSide: '-1px',
-          // gutterOfEnds: '20px',
-        },
-        bar: {
-          opacity:1,
-          background: "rgb(24, 144, 255)"
-        }
-      },
       filteredData: [],
       search: '',
       stacks: [
@@ -169,11 +133,11 @@ export default {
       }
       ],
       easings,
+      teamid: "",
       nhldata: [],
       nhlschedule: [],
       loading: false,
       pastgame: true,
-      awayscore:'',
       dateNow: 'the date here'
     };
   },
@@ -183,7 +147,6 @@ export default {
     this.getNHLSchedule(10);
   },
   mounted() {
-    // this.getfilteredData();
     
   },
   computed: {
@@ -202,11 +165,10 @@ export default {
   methods: {
     getNHLData(){
       console.log('nhl')
-      // this.loading = true;
-      axios.get("https://statsapi.web.nhl.com/api/v1/teams/")
+      axios.get("teams/")
         .then((response) => {
           console.log('test');
-          //this.loading = false;
+          this.loading = false;
           console.log('test 2');
           console.log('this.nhldata is: ' + this.nhldata)
           this.nhldata = response.data;
@@ -218,9 +180,10 @@ export default {
     },
 
     getNHLSchedule(id){
-      axios.get("https://statsapi.web.nhl.com/api/v1/schedule?teamId=" + id + "&startDate=2018-10-03&endDate=2019-04-06")
+      this.teamid = id;
+      axios.get("schedule?teamId=" + id + "&startDate=2018-10-03&endDate=2019-04-06")
         .then((response) => {
-          //this.loading = false;
+          this.loading = false;
           console.log('this.nhlschedule is: ' + this.nhlschedule)
           this.nhlschedule = response.data;
         }, (error) => {
@@ -231,28 +194,35 @@ export default {
     getTime(thedate){
       console.log('dateNow is: ' + this.dateNow);
       console.log('thedate is: ' + thedate);
-      //this.dateNow = new Date(thedate);
       this.dateNow = new Date().getFullYear()
       console.log('dateNow now is: ' + this.dateNow);
       console.log('thedate now is: ' + thedate);
       return this.dateNow;
     },
 
-    // pastgamefunc(awayscore, homescore, currstatus){
-    //   if(currstatus == 'Final'){
-    //     console.log('awayscore is : ' + awayscore)
-    //     console.log('homescore is: ' + homescore)
-    //   }
-    //   else{
-    //     console.log('game not done show date');
-    //   }
-    // },
+    pastgamefunc(awayscore, homescore, currstatus){
+      if(currstatus == 'Final'){
+        console.log('awayscore is : ' + awayscore)
+        console.log('homescore is: ' + homescore)
+      }
+      else{
+        console.log('game not done show date');
+      }
+    },
+    clickTextlink(url){
+     console.log('teamid is: ' + this.teamid);
 
-    clickTextlink(thedata){
-      console.log('this work?');
-      console.log('thedata is: ' + thedata);
-      this.filteredData = thedata;
-      console.log('this.filteredData is: ' + this.filteredData)
+     //do some tweenlite transitions maybe then call router
+     //onComplete:doRouter
+     //function doRouter(){
+     //    router.push(url, this.teamid);
+     //    console.log('hi');
+     //  }
+
+     router.push(url, this.teamid);
+    },
+    onScroll (e) {
+      this.offsetTop = e.target.scrollTop
     }
   }
 };
@@ -262,38 +232,53 @@ export default {
 
 @import "../../node_modules/uikit3-extra-widths/uikit3/width-ex";
 @import "../styles/styles.scss";
-//@import "../../node_modules/bootstrap/scss/bootstrap.scss";
+
+// grey fcfcfc - grey lighten-4
+// pink f7567c pink lighten-1
+// yellow fffae3 - amber lighten-5
+// blue 99e1d9 - teal lighten-3
+// black 5d576b - blue-grey darken-4
+
+.schedulepage{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:calc(100vh - 65px);
+}
+
+.vcontainer{
+  max-height: 92vh;
+  max-width:70vw;
+  padding:0;
+}
+
+.vlayout{
+  height: auto;
+}
+
+.gametimetxt{
+  color: #757575;
+  text-decoration:none;
+}
 
 .the-cards{
-  margin-right:50px;
 }
 
 #parent {
-  margin-top:20px;
-  // width: 60vw;
-  width:700px;
-  height: 80vh;
+  width:100vw;
+  height:93vh;
   display: inline-block;
 }
 
   #child {
-    // width: 60vw;
-    width: 700px;
-    height: 100%;
-    /* background: -webkit-linear-gradient(left top, red, blue); */
-    /* Safari 5.1 to 6.0 */
-    /* background: -o-linear-gradient(bottom right, red, blue); */
-    /* Opera 11.1 to 12.0 */
-    /* background: -moz-linear-gradient(bottom right, red, blue); */
-    /* Firefox 3.6 to 15 */
-    /* background: linear-gradient(to bottom right, red, blue); */
+    width:100vw;
+    height: 100vh;
+    background-color:$lightgrey;
   }
 
 .search-wrapper{
-  /* margin-left:75px; */
 }
 .form-check{
-    /* width:150px; */
 }
 
 .form-check-label{
@@ -305,15 +290,15 @@ export default {
 }
 
 .schedulebox{
-  width:97%;
-  height:110px;
-  background-color:$dark;
+  border-bottom: 1px solid $grey;
+  width:100%;
+  background-color:$light;
 }
 
 .label{
   color:$light;
   font-size:16px;
-  font-family: 'Fjalla One', sans-serif;
+  font-family: 'Nunito', sans-serif;
 }
 
 // p, ul, ol, dl, pre, address, fieldset, figure
@@ -323,29 +308,26 @@ p
   margin-bottom:0px;
 }
 ul{
-  //margin-left:20px;
   margin:0;
 }
 
 .hrline{
   color:$lightgrey;
-  width:100%;
-  height:1px;
 }
 
 .schedule-date{
   font-size:20px;
   font-weight:bold;
-  font-family: 'Fjalla One', sans-serif;
-  color:$white;
+  font-family: 'Nunito', sans-serif;
+  color:$dark;
   text-transform: uppercase;
   text-align:left;
 }
 
 .schedule-time{
   font-size:16px;
-  font-family: 'Fjalla One', sans-serif;
-  color:$white;
+  font-family: 'Nunito', sans-serif;
+  color:$dark;
   text-align:left;
 }
 
@@ -355,46 +337,41 @@ ul{
     justify-content: center;
 }
 .schedulebox1{
-  background-color:$green;
+  background-color:$white;
 }
 .schedulebox2{
   
-  background-color:$blue;
+  background-color:$white;
 }
 .schedulebox3{
   
-  background-color:$yellow;
+  background-color:$white;
 }
 .schedulebox4{
   
-  background-color:$orange;
+  background-color:$white;
 }
 .schedulebox5{
   
-  background-color:$red;
+  background-color:$white;
 }
 .schedulebox6{
   
-  background-color:$lightblue;
+  background-color:$white;
 }
 
 .scheduleboxitem{
-  //height:175px;
   list-style:none;
   text-align:center;
   padding:0;
-  //line-height:1px;
-  //margin-top:10px;
-  //background-color:$light;
 }
 
 .scheduleboxitem p{
 
   font-size:20px;
   font-weight:bold;
-  font-family: 'Fjalla One', sans-serif;
-  color:$white;
-  //text-transform: uppercase;
+  font-family: 'Nunito', sans-serif;
+  color:$dark;
   text-align:left;
 }
 

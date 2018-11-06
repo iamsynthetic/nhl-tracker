@@ -1,9 +1,6 @@
 <template>
     <div class="uk-offcanvas-content thebg">
-    <!-- <vk-grid gutter="small"> -->
-        <!-- <app-leftbar class="uk-light theleftbar"></app-leftbar> -->
         <app-searchpage class="thesearchpage" data-uk-height-viewport="expand:true"></app-searchpage>
-    <!-- </vk-grid> -->
     </div>
 </template>
 
