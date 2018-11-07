@@ -1,40 +1,19 @@
 // fonts ////////////////////////////
 
 @import url('https://fonts.googleapis.com/css?family=Nunito:400,400i|Open+Sans:300,400,400i,700');
-//@import url('https://fonts.googleapis.com/css?family=Fjalla+One|Noto+Sans:400,400i,700,700i');
-//@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,400i,800|Oswald:300,400,700');
-
 
 
 
 // colors ///////////////////////////
 
 // material colors
-
-// grey fcfcfc - grey lighten-4
-// pink f7567c pink lighten-1
-// yellow fffae3 - amber lighten-5
-// blue 99e1d9 - teal lighten-3
-// black 5d576b - blue-grey darken-4
-
-
-
-//pastel //
-
-// $blue: #90C8FF;
-// $dark_blue: #29486B;
-// $orange: #FFEA7B;
-// $red: #FF4E49;
-// $green: #80FF71;
-
-
-// primary //
-
-$green: #16E80C;
-$blue: #0DFBFF;
-$yellow: #FFE500;
-$orange: #E8790C;
-$red: #FF1539;
+$primary: #f5f5f5;
+$secondary: #fff8e1;
+$accent: #ec407a;
+$success: #80cbc4;
+$info: #263238;
+$warning: #FFC107;
+$error: #FF5252;
 
 // base //
 
@@ -50,9 +29,3 @@ $offwhite: #f8f9fb;
 $lightgrey: #f3f4f6;
 $lightblue: #C8DDE2;
 $darkblue: #1B2F36;
-
-html, body {
-    color:!important #ff0000;
-    background-color:!important #ff0000;
-  }
-

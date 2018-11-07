@@ -61,13 +61,13 @@ export default {
 
     .theheader{
         height:60px;
-        background-color:$dark;
+        background-color:$info;
     }
 
     .header-fixed{
         height:60px;
         z-index:10;
-        background-color:$dark;
+        background-color:$info;
     }
 
     .header-container{
@@ -93,7 +93,7 @@ export default {
     .header-navbar-nav-title{
         height:60px;
         width:60px;
-        background-color:$blue;
+        background-color:$accent;
     }
     
     .thesearchbar{

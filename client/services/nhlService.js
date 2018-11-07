@@ -2,7 +2,7 @@ import Api from './Api'
 
 export default {
     getAllTeams(){
-        return Api().get('teams/')
+        return Api().get('teams')
     },
     getATeam(id){
         return Api().get('teams/' + id)
@@ -16,5 +16,10 @@ export default {
         console.log('getMatchup date is: ' + date);
         //https://statsapi.web.nhl.com/api/v1/schedule?teamId=10&startDate=2018-10-03&endDate=2018-10-03
         return Api().get('schedule?teamId=' + id + '&startDate=' + date + '&endDate=' + date);
+    },
+    getMatchupBoxScore(gamepk){
+        console.log('getmatchupBoxScore gamepk is: ' + gamepk);
+        //https://statsapi.web.nhl.com/api/v1/game/2018020215/boxscore
+        return Api().get('game/' + gamepk + '/boxscore');
     }
 }

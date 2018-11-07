@@ -10,7 +10,7 @@
                   <v-subheader v-if="item.date">
                     {{ item.date }}
                   </v-subheader>
-                  <v-list-tile class="listtile-link" avatar @click="clickTextlink('/matchup', item.games[0].teams.away.team.id, item.games[0].teams.home.team.id, item.date)">
+                  <v-list-tile class="listtile-link" avatar @click="clickTextlink('/matchup', index, item.games[0].teams.away.team.id, item.games[0].teams.home.team.id, item.date, item.games[0].gamePk)">
                     <v-flex d-flex xs12>
                       <v-layout row wrap>
                         <v-flex d-flex xs12>
@@ -43,7 +43,12 @@
                           </v-flex>
                           <v-flex d-flex xs4>
                             <v-list-tile-content class="pb-1 align-end justify-end">
-                              <p class="gametimetxt">{{ item.games[0].gameDate | moment("h:mm a") }}</p>
+                              <p class="gametimetxt" v-if="item.games[0].status.detailedState==='Final'">
+                                FINAL {{ item.games[0].teams.away.score }} - {{ item.games[0].teams.home.score }}
+                              </p>
+                              <p class="gametimetxt" v-else>
+                                {{ item.games[0].gameDate | moment("h:mm a") }}
+                              </p>
                             </v-list-tile-content>
                           </v-flex>
                         </v-flex>
@@ -139,6 +144,7 @@ export default {
       teamid: "",
       nhldata: [],
       nhlschedule: [],
+      nhlschedulegamepks: [],
       pastgame: true,
       dateNow: 'the date here'
     };
@@ -166,45 +172,34 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(['CHANGE_HOME_TEAM, CHANGE_AWAY_TEAM', 'CHANGE_MATCHUP']),
-    ...mapActions(['changeHomeTeam', 'changeAwayTeam', 'changeMatchup']),
+    ...mapMutations(['CHANGE_HOME_TEAM, CHANGE_AWAY_TEAM', 'CHANGE_GAME_NUMBER','CHANGE_MATCHUP', 'CHANGE_MATCHGAMEPK', 'ADD_GAMEPKS']),
+    ...mapActions(['changeHomeTeam', 'changeAwayTeam', 'changeGamenumber','changeMatchup', 'changeMatchgamepk', 'fillGamePks']),
     
     changethehometeam(id){
       this.changeHomeTeam(id);
     },
+
     changetheawayteam(id){
       this.changeAwayTeam(id);
     },
+
     changethematchup(id){
       this.changeMatchup(id);
     },
-    // getNHLData(){
-    //   console.log('nhl')
-    //   axios.get("teams/")
-    //     .then((response) => {
-    //       console.log('test');
-    //       //this.loading = false;
-    //       console.log('test 2');
-    //       console.log('this.nhldata is: ' + this.nhldata)
-    //       this.nhldata = response.data;
-    //       console.log('test 3');
-    //       console.log(this.nhldata);
-    //     }, (error) => {
-    //       //this.loading = false;
-    //     })
-    // },
 
-    // getNHLSchedule(id){
-    //   this.teamid = id;
-    //   axios.get("schedule?teamId=" + id + "&startDate=2018-10-03&endDate=2019-04-06")
-    //     .then((response) => {
-    //       //this.loading = false;
-    //       console.log('this.nhlschedule is: ' + this.nhlschedule)
-    //       this.nhlschedule = response.data;
-    //     }, (error) => {
-    //       //this.loading = false;
-    //     })
-    // },
+    changethegamenumber(id){
+      this.changeGamenumber(id);
+    },
+
+    changethematchgamepk(id){
+      console.log('changethematchgamepk is: ' + id);
+      this.changeMatchgamepk(id);
+    },
+
+    addthegamepks(id){
+      console.log('addthegamepks is: ' + id);
+      this.fillGamePks(id);
+    },
 
     async getNHLData(){
       console.log(this.theteamid);
@@ -213,9 +208,18 @@ export default {
     },
 
     async getNHLSchedule(){
-      console.log(this.theteamid);
       const response = await nhlService.getTeamSchedule(this.theteamid)
       this.nhlschedule = response.data
+      
+      // for (var key in this.nhlschedule.dates) {
+      //     console.log('key1 is: ' + key);
+      // }
+
+      for (const value of this.nhlschedule.dates) {
+        console.log('value amount is: ' + value);
+        console.log('value is : ' + value.games[0].gamePk);
+        this.addthegamepks(value.games[0].gamePk);
+      }
     },
 
     getTime(thedate){
@@ -236,17 +240,21 @@ export default {
         console.log('game not done show date');
       }
     },
-    clickTextlink(url, awayteamid, hometeamid, matchupdate){
+    clickTextlink(url, gamenumber, awayteamid, hometeamid, matchupdate, matchgamepk){
      //console.log('teamid is: ' + this.teamid);
       //need to set the state here
       console.log('schedulepage url is: ' + url);
+      console.log('gamenumber is: ' + gamenumber);
       console.log('schedulepage awayteamid is: ' + awayteamid);
       console.log('schedulepage hometeamid is: ' + hometeamid);
       console.log('schedulepage matchupdate is: ' + matchupdate);
+      console.log('schedulepage matchgamepk is: ' + matchgamepk);
 
       this.changethehometeam(hometeamid);
+      this.changethegamenumber(gamenumber);
       this.changetheawayteam(awayteamid);
       this.changethematchup(matchupdate);
+      this.changethematchgamepk(matchgamepk);
      router.push(url);
     },
     onScroll (e) {
