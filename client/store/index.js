@@ -80,7 +80,7 @@ const actions = {
     })
   },
   changeTeamSelected: (context, id) => {
-    context.commit('CHANGE_TEAM_SELECTED')
+    context.commit('CHANGE_TEAM_SELECTED', id)
   },
   changeHomeTeam: (context, id) => {
     context.commit('CHANGE_HOME_TEAM', id)

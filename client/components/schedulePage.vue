@@ -168,7 +168,8 @@ export default {
     },
     theteamid: function(){
       //return store.state.teamid
-      return this.$store.state.hometeamid
+      //return this.$store.state.hometeamid
+      return this.$store.state.teamselectedid
     }
   },
   methods: {

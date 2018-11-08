@@ -2,16 +2,12 @@
     <div class="teamselectpage">
       <v-container grid-list-lg id="scroll-target" class="vcontainer">
         <v-layout row wrap class="vlayout">
-          <v-flex v-for="(item, index) in nhlteams" :key="`card-${item.id}`" xs4 md2 @click="clickTextlink('/schedule', item.id)">
+          <v-flex class="the-items" v-for="(item, index) in nhlteams" :key="`card-${item.id}`" xs4 md2 @click="clickTextlink('/schedule', item.id)">
             <v-card flat tile>
               <v-img :src="`../../static/logos/${item.id}.png`" contain aspect-ratio="1"></v-img>
-
-              <v-card-title primary-title>
-                <div>
-                  <h3 class="headline mb-0">Kangaroo Valley Safari</h3>
-                </div>
-              </v-card-title>
-            
+              <v-card-text>
+                  <h3 class="text-xs-center">{{ item.name }}</h3>
+              </v-card-text>
             </v-card>
           </v-flex>
         </v-layout>
@@ -113,7 +109,6 @@ export default {
       const response = await nhlService.getAllTeams()
       this.nhlteams = response.data.teams
     },
-
     clickTextlink(url, teamid){
       // console.log('this work?');
       // console.log('thedata is: ' + thedata);
@@ -136,6 +131,10 @@ export default {
 @import "../styles/styles.scss";
 //@import "../../node_modules/bootstrap/scss/bootstrap.scss";
 
+
+.the-items:hover{
+  cursor:pointer;
+}
 .the-cards{
   margin-right:50px;
 }
