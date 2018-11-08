@@ -1,5 +1,10 @@
 <template>
     <div class="teamselectpage">
+
+      <v-pagination v-model="page" :length="pages"  prev-icon="mdi-menu-left" next-icon="mdi-menu-right">
+      </v-pagination>
+
+
       <v-container grid-list-lg id="scroll-target" class="vcontainer">
         <v-layout row wrap class="vlayout">
           <v-flex class="the-items" v-for="(item, index) in nhlteams" :key="`card-${item.id}`" xs4 md2 @click="clickTextlink('/schedule', item.id)">
@@ -30,6 +35,8 @@ export default {
   },
   data() {
     return {
+      page: 1,
+      pages: 31,
       filteredData: [],
       search: '',
       stacks: [
@@ -77,6 +84,11 @@ export default {
       nhlteams: [],
       loading: false
     };
+  },
+  watch: {
+      page() {
+          console.log('page: '+this.page);
+      }
   },
   created(){
     this.$eventHub.$on('filterdata', this.clickTextlink);

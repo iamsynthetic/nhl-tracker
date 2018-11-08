@@ -2,6 +2,11 @@
     <v-content class="matchuppage">
         <v-container class="vcontainer" grid-list-md>
             <v-breadcrumbs class="breadcrumbs" :items="items" divider=">"></v-breadcrumbs>
+            <ul class="breadcrumb">
+                <li><a @click="clickTextLink('/teamselect', theselectedteam)">teams</a></li>
+                <li><a @click="clickTextLink('/schedule', theselectedteam)">schedule</a></li>
+                <li>matchup</li>
+            </ul>
             <v-layout row wrap>
                 <v-flex class="bg-secondary" xs1 text-xs-center>
                     <v-btn fab dark small color="primary" @click="gotoNextMatchup(false)">
@@ -135,6 +140,9 @@ export default {
         },
         thematchgamepk: function(){
             return this.$store.state.matchgamepk
+        },
+        theselectedteam: function(){
+            return this.$store.state.teamselectedid
         }
     },
     methods: {
@@ -211,9 +219,30 @@ export default {
 
 @import "../styles/styles.scss";
 
-.breadcrumbs{
-    padding-left:0px;
-    padding-right:0px;
+ul.breadcrumb {
+    padding: 10px 12px;
+    list-style: none;
+}
+ul.breadcrumb li {
+    display: inline;
+    font-size: 14px;
+    // color: #b3d4fc;
+    color: rgba(0,0,0,.38);
+}
+ul.breadcrumb li+li:before {
+    padding-left: 9px;
+    padding-right:9px;
+    //color: #b3d4fc;
+    color: rgba(0,0,0,.38);
+    content: "\003e";
+}
+ul.breadcrumb li a {
+    color: #0275d8;
+    text-decoration: none;
+}
+ul.breadcrumb li a:hover {
+    
+    text-decoration: underline;
 }
 .bg-primary{ 
     background-color:$primary
