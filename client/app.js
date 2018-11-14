@@ -4,7 +4,7 @@ import { sync } from 'vuex-router-sync'
 import App from './components/App'
 import router from './router'
 import store from './store'
-import VueLoading from 'vue-component-loading'
+
 import axios from 'axios'
 import VuikitIcons from '@vuikit/icons'
 import vueMoment from 'vue-moment'
@@ -28,23 +28,12 @@ Vue.use(Vuetify, {iconfont: 'mdi'}, {
   }})
 
 Vue.use(vueMoment)
-Vue.use(VueLoading, config)
 Vue.use(axios)
 Vue.use(vuescroll)
 
 sync(store, router)
 
 
-let config = {
-  progressBar: {
-    color: '#999999',
-    failedColor: '#ff0000',
-    thickness: '2px'
-  }
-}
-
-//might be better to abstract this to another file later on if this gets too big
-// axios.defaults.baseURL = 'https://statsapi.web.nhl.com/api/v1/'
 
 Vue.prototype.$eventHub = new Vue();
 

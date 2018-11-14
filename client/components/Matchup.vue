@@ -1,22 +1,23 @@
 <template>
     <v-content class="matchuppage">
-        <v-container class="vcontainer" grid-list-md>
-            <v-breadcrumbs class="breadcrumbs" :items="items" divider=">"></v-breadcrumbs>
-            <ul class="breadcrumb">
-                <li><a @click="clickTextLink('/teamselect', theselectedteam)">teams</a></li>
-                <li><a @click="clickTextLink('/schedule', theselectedteam)">schedule</a></li>
-                <li>matchup</li>
-            </ul>
-            <v-layout row wrap>
+        <v-container class="vcontainer">
+            <v-layout row wrap class="vlayout">
+                <v-flex xs12>
+                    <ul class="breadcrumb">
+                        <li><a @click="clickTextLink('/teamselect')">teams</a></li>
+                        <li><a @click="clickTextLink('/schedule')">schedule</a></li>
+                        <li>matchup</li>
+                    </ul>
+                </v-flex>
                 <v-flex class="bg-secondary" xs1 text-xs-center>
                     <v-btn fab dark small color="primary" @click="gotoNextMatchup(false)">
                         <v-icon dark>remove</v-icon>
                     </v-btn>
                 </v-flex>
                 <v-flex class="bg-primary" xs10>
-                    <v-layout row wrap>
+                    <v-layout v-if="matchboxscore.teams" row wrap>
                         <v-flex class="bg-primary" xs12 md5 text-xs-center>
-                            <img class="logo" :src="`../../static/logos/${matchboxscore.teams.away.team.id}.png`" alt="">
+                            <a><img class="logo" :src="`../../static/logos/${matchboxscore.teams.away.team.id}.png`" alt="" @click="gotoFranchise(`/franchise/${matchboxscore.teams.away.team.id}`, matchboxscore.teams.away.team.id)"></a>
                             <v-layout row wrap>
                                 <v-flex class="bg-secondary" xs12>
                                     <p>{{ matchboxscore.teams.away.team.name }}</p>
@@ -27,7 +28,7 @@
                             <p>VS</p>
                         </v-flex>
                         <v-flex class="bg-success" xs12 md5 text-xs-center>
-                            <img class="logo" :src="`../../static/logos/${matchboxscore.teams.home.team.id}.png`" alt="">
+                            <a><img class="logo" :src="`../../static/logos/${matchboxscore.teams.home.team.id}.png`" alt="" @click="gotoFranchise(`/franchise/${matchboxscore.teams.home.team.id}`, matchboxscore.teams.home.team.id)"></a>
                             <v-layout row wrap>
                                 <v-flex class="bg-secondary" xs12>
                                     <p>{{ matchboxscore.teams.home.team.name }}</p>
@@ -88,6 +89,7 @@
 import axios from 'axios'
 import router from '../router'
 import nhlService from '../services/nhlService'
+import { mapState, mapMutations, mapActions } from 'vuex'
 
 export default {
     name: 'Matchup',
@@ -146,16 +148,23 @@ export default {
         }
     },
     methods: {
-        
+        ...mapMutations(['CHANGE_TEAM_SELECTED', 'CHANGE_SELECTED_FRANCHISE']),
+        ...mapActions(['changeTeamSelected', 'changeSelectedFranchise']),
+
+        changetheteamselected(id){
+            this.changeTeamSelected(id);
+        },
+        showselectedfranchise(id){
+         this.changeSelectedFranchise(id)
+        },
         setGameCount(){
             this.gameCount = this.$store.state.gamenumber;
-            // this.thehometeamid();
-            // this.awayteamid();
         },
         async getMatchup(matchup){
             console.log(typeof(matchup));
             if(isNaN(matchup)){
                 console.log('getmatchup in matchup.vue this.thematchgamepk is: ' + this.thematchgamepk);
+                console.log('getmatchup in matchup.vue matchup is: ' + matchup);
                 const response = await nhlService.getMatchupBoxScore(this.thematchgamepk)
                 this.matchboxscore = response.data
                 this.hometeamstats = response.data.teams.home.teamStats.teamSkaterStats
@@ -196,20 +205,30 @@ export default {
                     this.gameCount++;
                 }
             }
+            console.log('MATCHUP - goToNextMatchup this.theselectedteam is: ' + this.theselectedteam);
+            console.log(this.$store.state.gamepks[this.gameCount])
+            //console.log('gotonextmatchup this.$store.state.gamepks[this.gameCount] is - ' + this.$store.state.gamepks[this.gameCount]);
             this.getMatchup(this.$store.state.gamepks[this.gameCount]);
         },
-        clickTextLink(url, teamid){
+        gotoFranchise(url, teamid){
+            console.log('gotoFranchise - teamid is: ' + teamid)
+            this.showselectedfranchise(teamid)
+            //this.showselectedfranchise(teamid)
+            this.clickTextLink(url)
+        },
+        clickTextLink(url){
         //     function doRouter(){
         //         router.push(url)
         //         console.log('this page is: ' + this.name + ' url is: ' + url)
         //     }
         // }
             this.url = url;
-            this.teamid = teamid;
-            console.log('click function - this.teamid is: ' + this.teamid);
+            //this.teamid = teamid;
+            //console.log('click function - this.teamid is: ' + this.teamid);
 
+            //router.push(url)
             router.push(url)
-            console.log('this page is: ' + this.name + ' url is: ' + url)
+            console.log('this page is: ' + this.teamid + ' url is: ' + url)
         }
     }
 }
@@ -219,30 +238,41 @@ export default {
 
 @import "../styles/styles.scss";
 
+a {
+  text-decoration:none;
+}
+
+.vcontainer{
+  padding:0;
+  height: calc(100vh - 60px);
+}
+
 ul.breadcrumb {
-    padding: 10px 12px;
+    padding: 0px 0px;
+    margin-top:30px;
     list-style: none;
 }
 ul.breadcrumb li {
     display: inline;
     font-size: 14px;
-    // color: #b3d4fc;
-    color: rgba(0,0,0,.38);
+    color: $primary;
 }
 ul.breadcrumb li+li:before {
     padding-left: 9px;
     padding-right:9px;
-    //color: #b3d4fc;
-    color: rgba(0,0,0,.38);
+    color: $grey;
     content: "\003e";
 }
 ul.breadcrumb li a {
-    color: #0275d8;
+    color: $success;
     text-decoration: none;
 }
 ul.breadcrumb li a:hover {
     
     text-decoration: underline;
+}
+.vlayout{
+  height: calc(100vh - 60px);
 }
 .bg-primary{ 
     background-color:$primary
@@ -269,11 +299,92 @@ ul.breadcrumb li a:hover {
     width:28em;
 }
 
-@media only screen and (max-width: 600px) {
-    .logo{
+@media only screen and (min-width: 320px){
+  .container{
+    max-width: 300px;
+  }
+  .matchuppage{
+    height: 100%;
+  }
+}
+
+@media only screen and (min-width: 375px){
+  .container{
+    max-width:350px;
+  }
+}
+
+@media only screen and (min-width: 480px){
+  .container{
+    max-width:450px;
+  }
+}
+
+@media only screen and (min-width: 600px){
+  .container{
+    max-width:500px;
+  }
+  .logo{
         width:10em;
     }
 }
 
+@media only screen and (min-width: 768px){
+  .container{
+    max-width:700px;
+  }
+}
+
+@media only screen and (min-width: 900px){
+  .container{
+    max-width:800px;
+  }
+}
+
+@media only screen and (min-width: 1100px){
+  .container{
+    max-width:1000px;
+  }
+}
+
+@media only screen and (min-width: 1264px){
+  .container{
+    max-width:1164px;
+  }
+  .vcontainer{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height: calc(100vh - 60px);
+  }
+}
+
+@media only screen and (min-width: 1400px){
+  .container {
+      max-width: 1300px;
+  }
+}
+/* Large screens ----------- */
+@media only screen and (min-width: 1600px) {
+/* Styles */
+  .container{
+    max-width: 1400px;
+  }
+}
+/* Large screens ----------- */
+@media only screen and (min-width: 1800px) {
+/* Styles */
+  .container{
+    max-width: 1600px;
+  }
+}
+
+/* Large screens ----------- */
+@media only screen and (min-width: 1900px) {
+/* Styles */
+  .container{
+    max-width: 1700px;
+  }
+}
 
 </style>

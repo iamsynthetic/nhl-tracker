@@ -1,95 +1,44 @@
 <template>
   <div id="app">
     <app-header></app-header>
-    <!-- <h1>{{ title }}</h1>
-    <form @submit.prevent="addLink">
-      <input class="link-input" type="text" placeholder="Add a link" v-model="newLink" />
-    </form>
-    <ul>
-        <li v-for="(link, index) in links" :key="index">
-          {{ link }}
-          <button @click="removeLinks(index)" class="rm">Remove</button>
-        </li>
-    </ul>
-    <div class="right">
-      <stats />
-    </div> -->
     <router-view></router-view>
   </div>
 </template>
 
 <script>
-// import Stats from './stats'
-// import { mapState, mapMutations, mapActions } from 'vuex'
 import Header from './Header.vue'
 
 export default {
   name: 'App',
   data(){
     return{
-      // newLink: ''
     }
   },
   created(){
-    //  [App.vue specific] When App.vue is first loaded start the progress bar
-      this.$Progress.start()
-      //  hook the progress bar to start before we move router-view
-      this.$router.beforeEach((to, from, next) => {
-        //  does the page we want to go to have a meta.progress object
-        if (to.meta.progress !== undefined) {
-          let meta = to.meta.progress
-          // parse meta tags
-          this.$Progress.parseMeta(meta)
-        }
-        //  start the progress bar
-        this.$Progress.start()
-        //  continue to next page
-        next()
-      })
-      //  hook the progress bar to finish after we've finished moving router-view
-      this.$router.afterEach((to, from) => {
-        //  finish the progress bar
-        this.$Progress.finish()
-      })
+    
   },
   computed:{
-    // ...mapState([
-    //   'title',
-    //   'links'
-    // ])
   },
   components: {
     'appHeader': Header,
     //Stats
   },
   methods: {
-    // ...mapMutations([
-    //   'ADD_LINK'
-    // ]),
-    // ...mapActions([
-    //   'removeLink'
-    // ]),
-    // addLink: function(){
-    //   this.ADD_LINK(this.newLink)
-    //   this.newLink = ''
-    // },
-    // removeLinks: function(link){
-    //   this.removeLink(link)
-    // }
   }
 };
 </script>
 
-<style lang="scss" scoped> 
+<style lang="scss"> 
 @import '../styles/styles.scss';
 
 body {
-    overflow-y:hidden;
+  //overflow-y:hidden;
+  background-color:$info;
 }
 
 #app {
   margin-top: 0px;
   height:100%;
-  background-color:!important #ff0000;
+  //background-color:$info;
 }
 </style>

@@ -34,12 +34,4 @@ export default {
         width:60px;
     }
 
-    .thesearchpage{
-        /* width:calc(100vw - 75px);
-        margin-left:75px;*/
-        /* width: calc(100vw - 150px);
-        margin-left: 60px;
-        padding-left: 38px; */
-    }
-
 </style>

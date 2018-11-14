@@ -1,16 +1,31 @@
 <template>
-    <div class="schedulepage">
-      <v-container id="scroll-target" class="vcontainer">
-        <v-layout class="vlayout">
+    <v-content class="schedulepage">
+      <v-container class="vcontainer">
+        <v-layout row wrap class="vlayout">
           <v-flex xs12>
+            <ul class="breadcrumb">
+              <li><a @click="clickTextLink('/teamselect')">teams</a></li>
+              <li>schedule</li>
+            </ul>
+          </v-flex>
+          <v-flex class="logocontainer" xs12 lg3>
+            <img class="thelogo" :src="`../../static/logos/${theteamid}.png`" alt="">
+          </v-flex>
+          <v-flex class="textcontainer" xs12 lg3>
+            <p class="thetitle">{{theteamname}}<br><span class="thesubtitle">2018 - 2019 schedule</span></p>
+          </v-flex>
+
+          <v-flex xs12 lg6>
             <v-card>
+              <vue-scroll class="vscroll" :ops="ops">
+              <div class="vscroll" id="child">
               <v-list three-line>
-                <template v-for="(item, index) in nhlschedule.dates">
+                <template class="thelistgroup" v-for="(item, index) in nhlschedule.dates">
                   <v-divider v-if="index < nhlschedule.dates.length" :key="`divider-${item.date}`"></v-divider>
                   <v-subheader v-if="item.date">
                     {{ item.date }}
                   </v-subheader>
-                  <v-list-tile class="listtile-link" avatar @click="clickTextlink('/matchup', index, item.games[0].teams.away.team.id, item.games[0].teams.home.team.id, item.date, item.games[0].gamePk)">
+                  <v-list-tile class="listtile-link" avatar @mouseover="listover" @mouseout="listout" @click="clickScheduledGame('/matchup', index, item.games[0].teams.away.team.id, item.games[0].teams.home.team.id, item.date, item.games[0].gamePk)">
                     <v-flex d-flex xs12>
                       <v-layout row wrap>
                         <v-flex d-flex xs12>
@@ -21,7 +36,7 @@
                           </v-flex>
                           <v-flex d-flex xs7>
                             <v-list-tile-content>
-                              <v-list-tile-title d-flex xs11 v-html="item.games[0].teams.away.team.name"></v-list-tile-title>
+                              <v-list-tile-title class="awayteamname" e d-flex xs11 v-html="item.games[0].teams.away.team.name"></v-list-tile-title>
                             </v-list-tile-content>
                           </v-flex>
                           <v-flex d-flex xs4>
@@ -38,7 +53,7 @@
                           </v-flex>
                           <v-flex d-flex xs7>
                             <v-list-tile-content class='pt-1'>
-                              <v-list-tile-title d-flex xs11 v-html="item.games[0].teams.home.team.name"></v-list-tile-title>
+                              <v-list-tile-title class="hometeamname" d-flex xs11 v-html="item.games[0].teams.home.team.name"></v-list-tile-title>
                             </v-list-tile-content>
                           </v-flex>
                           <v-flex d-flex xs4>
@@ -57,11 +72,14 @@
                   </v-list-tile>
                 </template>
               </v-list>
+              </div>
+            </vue-scroll>
             </v-card>
           </v-flex>
+
         </v-layout>
       </v-container>
-    </div>
+    </v-content>
 </template>
 
 
@@ -96,6 +114,12 @@ export default {
   },
   data() {
     return {
+      ops: {
+          bar: {
+            keepShow:true,
+            background: "#80cbc4"
+          }
+      },
       filteredData: [],
       search: '',
       stacks: [
@@ -170,11 +194,14 @@ export default {
       //return store.state.teamid
       //return this.$store.state.hometeamid
       return this.$store.state.teamselectedid
+    },
+    theteamname: function(){
+      return this.$store.state.teamname
     }
   },
   methods: {
-    ...mapMutations(['CHANGE_HOME_TEAM, CHANGE_AWAY_TEAM', 'CHANGE_GAME_NUMBER','CHANGE_MATCHUP', 'CHANGE_MATCHGAMEPK', 'ADD_GAMEPKS']),
-    ...mapActions(['changeHomeTeam', 'changeAwayTeam', 'changeGamenumber','changeMatchup', 'changeMatchgamepk', 'fillGamePks']),
+    ...mapMutations(['CHANGE_HOME_TEAM', 'CHANGE_AWAY_TEAM', 'CHANGE_GAME_NUMBER','CHANGE_MATCHUP', 'CHANGE_MATCHGAMEPK', 'ADD_GAMEPKS', 'EMPTY_GAMEPKS']),
+    ...mapActions(['changeHomeTeam', 'changeAwayTeam', 'changeGamenumber','changeMatchup', 'changeMatchgamepk', 'fillGamePks', 'emptyGamePks']),
     
     changethehometeam(id){
       this.changeHomeTeam(id);
@@ -202,6 +229,11 @@ export default {
       this.fillGamePks(id);
     },
 
+    emptythegamepks(){
+      console.log('emptygamepks');
+      this.emptyGamePks()
+    },
+
     async getNHLData(){
       console.log(this.theteamid);
       const response = await nhlService.getATeam(this.theteamid)
@@ -215,6 +247,10 @@ export default {
       // for (var key in this.nhlschedule.dates) {
       //     console.log('key1 is: ' + key);
       // }
+
+      //need to clear the gamePk here once, before we populate it.
+      this.emptythegamepks();
+
 
       for (const value of this.nhlschedule.dates) {
         console.log('value amount is: ' + value);
@@ -241,7 +277,23 @@ export default {
         console.log('game not done show date');
       }
     },
-    clickTextlink(url, gamenumber, awayteamid, hometeamid, matchupdate, matchgamepk){
+    listover(e){
+      console.log('e.target is: ' + e.target);
+      console.log('listover');
+      //TweenMax.to(e.target, .5, {x:'-20px', autoAlpha:0, ease:Expo.easeOut});
+      TweenMax.to(e.target, .1, {css: {textDecoration:'none'}});
+      TweenMax.to(".gametimetxt", .1, {css: {textDecoration:'none', color:'#757575'}});
+      TweenMax.to(".awayteamname", .1, {css: {textDecoration:'none', color:'#000000'}});
+      TweenMax.to(".hometeamname", .1, {css: {textDecoration:'none', color:'#000000'}});
+    },
+    listout(e){
+      console.log('listout');
+      // TweenMax.to(e.target, .1, {css: {textDecoration:'none'}});
+      // TweenMax.to(".gametimetxt", .1, {css: {textDecoration:'none', color:'#757575'}});
+      // TweenMax.to(".awayteamname", .1, {css: {textDecoration:'none', color:'#000000'}});
+      // TweenMax.to(".hometeamname", .1, {css: {textDecoration:'none', color:'#000000'}});
+    },
+    clickScheduledGame(url, gamenumber, awayteamid, hometeamid, matchupdate, matchgamepk){
      //console.log('teamid is: ' + this.teamid);
       //need to set the state here
       console.log('schedulepage url is: ' + url);
@@ -251,12 +303,17 @@ export default {
       console.log('schedulepage matchupdate is: ' + matchupdate);
       console.log('schedulepage matchgamepk is: ' + matchgamepk);
 
+      console.log('TEAM ID IS: ' + this.theteamid);
+
       this.changethehometeam(hometeamid);
       this.changethegamenumber(gamenumber);
       this.changetheawayteam(awayteamid);
       this.changethematchup(matchupdate);
       this.changethematchgamepk(matchgamepk);
      router.push(url);
+    },
+    clickTextLink(url){
+      router.push(url);
     },
     onScroll (e) {
       this.offsetTop = e.target.scrollTop
@@ -277,20 +334,84 @@ export default {
 // black 5d576b - blue-grey darken-4
 
 .schedulepage{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:calc(100vh - 65px);
+  //display:flex;
+  //justify-content:center;
+  //align-items:center;
+  //height: calc(100vh - 60px);
+}
+
+a {
+  text-decoration:none;
 }
 
 .vcontainer{
-  max-height: 92vh;
-  max-width:70vw;
+  //max-height: 92vh;
+  //max-width:70vw;
   padding:0;
+  height: calc(100vh - 60px);
 }
 
+ul.breadcrumb {
+    padding: 0px 0px;
+    margin-top:30px;
+    list-style: none;
+}
+ul.breadcrumb li {
+    display: inline;
+    font-size: 14px;
+    color: $primary;
+}
+ul.breadcrumb li+li:before {
+    padding-left: 9px;
+    padding-right:9px;
+    color: $grey;
+    content: "\003e";
+}
+ul.breadcrumb li a {
+    color: $success;
+    text-decoration: none;
+}
+ul.breadcrumb li a:hover {
+    
+    text-decoration: underline;
+}
+
+#child{
+  width:auto !important;
+  height:60vh !important;
+}
 .vlayout{
-  height: auto;
+  height: calc(100vh - 60px);
+}
+.logocontainer{
+  display:flex;
+  align-items:center;
+  max-height:400px;
+}
+.textcontainer{
+  max-height:400px;
+  display:flex;
+  align-items:center;
+}
+.thelogo{
+  width:20vw;
+  height:auto;
+  margin:0 auto;
+}
+.thetitle{
+  font-size:30px;
+  color:$primary;
+}
+.thesubtitle{
+  font-size:16px;
+  color:$secondary;
+}
+.notlistcontent{
+  position:fixed;
+}
+.v-list{
+  padding:0 0 30px 0;
+  background:$info;
 }
 
 .gametimetxt{
@@ -298,16 +419,7 @@ export default {
   text-decoration:none;
 }
 
-.the-cards{
-}
-
-#parent {
-  width:100vw;
-  height:93vh;
-  display: inline-block;
-}
-
-  #child {
+#child {
     width:100vw;
     height: 100vh;
     background-color:$lightgrey;
@@ -417,5 +529,125 @@ ul{
   height:40px;
   padding:0px 10px 5px 0px;
 }
+
+@media only screen and (min-width: 320px){
+  .container{
+    max-width: 300px;
+  }
+
+
+  .schedulepage{
+    height: 100%;
+  }
+  .thetitle{
+    font-size:30px;
+    color:$primary;
+    margin: 0 auto;
+  }
+  .thesubtitle{
+    font-size:16px;
+    color:$secondary;
+    margin: 0 auto;
+  }
+  .textcontainer{
+    max-height:400px;
+    margin-bottom:40px;
+    text-align:center;
+  }
+}
+
+@media only screen and (min-width: 375px){
+  .container{
+    max-width:350px;
+  }
+}
+
+@media only screen and (min-width: 480px){
+  .container{
+    max-width:450px;
+  }
+}
+
+@media only screen and (min-width: 600px){
+  .container{
+    max-width:500px;
+  }
+}
+
+@media only screen and (min-width: 768px){
+  .container{
+    max-width:700px;
+  }
+}
+
+@media only screen and (min-width: 900px){
+  .container{
+    max-width:800px;
+  }
+}
+
+@media only screen and (min-width: 1100px){
+  .container{
+    max-width:1000px;
+  }
+}
+
+@media only screen and (min-width: 1264px){
+  .container{
+    max-width:1164px;
+  }
+
+  .thetitle{
+    font-size:30px;
+    color:$primary;
+    margin: 0;
+  }
+  .thesubtitle{
+    font-size:16px;
+    color:$secondary;
+    margin: 0;
+  }
+  .vcontainer{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height: calc(100vh - 60px);
+  }
+  .textcontainer{
+    max-height:400px;
+    display:flex;
+    align-items:center;
+    text-align:left;
+  }
+}
+
+@media only screen and (min-width: 1400px){
+  .container {
+      max-width: 1300px;
+  }
+}
+/* Large screens ----------- */
+@media only screen and (min-width: 1600px) {
+/* Styles */
+  .container{
+    max-width: 1400px;
+  }
+}
+/* Large screens ----------- */
+@media only screen and (min-width: 1800px) {
+/* Styles */
+  .container{
+    max-width: 1600px;
+  }
+}
+
+/* Large screens ----------- */
+@media only screen and (min-width: 1900px) {
+/* Styles */
+  .container{
+    max-width: 1700px;
+  }
+}
+
 
 </style>

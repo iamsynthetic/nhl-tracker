@@ -19,5 +19,9 @@ export default {
     getMatchupBoxScore(gamepk){
         console.log('getmatchupBoxScore gamepk is: ' + gamepk);
         return Api().get('game/' + gamepk + '/boxscore');
+    },
+    getTeamSeasonStats(id){
+        console.log('getTeamSeasonStats id is: ' + id);
+        return Api().get('teams/' + id + '/stats')
     }
 }

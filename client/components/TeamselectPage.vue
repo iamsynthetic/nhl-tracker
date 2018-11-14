@@ -1,19 +1,16 @@
 <template>
     <div class="teamselectpage">
-
-      <v-pagination v-model="page" :length="pages"  prev-icon="mdi-menu-left" next-icon="mdi-menu-right">
-      </v-pagination>
-
-
       <v-container grid-list-lg id="scroll-target" class="vcontainer">
         <v-layout row wrap class="vlayout">
-          <v-flex class="the-items" v-for="(item, index) in nhlteams" :key="`card-${item.id}`" xs4 md2 @click="clickTextlink('/schedule', item.id)">
-            <v-card flat tile>
+          <v-flex v-for="(item, index) in nhlteams.teams" :key="`card-${item.id}`" xs4 md2>
+            <!-- <v-card flat tile> -->
+            <div class="imagecontainer" @mouseenter="fillcolor" @mouseleave="emptycolor" @click="clickTextlink('/schedule', item.id, item.name)">
               <v-img :src="`../../static/logos/${item.id}.png`" contain aspect-ratio="1"></v-img>
               <v-card-text>
-                  <h3 class="text-xs-center">{{ item.name }}</h3>
+                  <h3 class="teamname text-xs-center">{{ item.name }}</h3>
               </v-card-text>
-            </v-card>
+            </div>
+            <!-- </v-card> -->
           </v-flex>
         </v-layout>
       </v-container>
@@ -27,6 +24,7 @@ import itemCard from './itemCard';
 import router from '../router'
 import nhlService from '../services/nhlService'
 import { mapState, mapMutations, mapActions } from 'vuex'
+import { TweenMax } from 'gsap'
 
 export default {
   name: 'TeamselectPage',
@@ -35,103 +33,82 @@ export default {
   },
   data() {
     return {
-      page: 1,
-      pages: 31,
-      filteredData: [],
-      search: '',
-      stacks: [
-      {
-        checked: false,
-        value: 'language'
-      },
-      {
-        checked: false,
-        value: 'framework'
-      },
-      {
-        checked: false,
-        value: 'frontend'
-        },
-      {
-        checked: false,
-        value: 'backend'
-      },
-      {
-        checked: false,
-        value: 'mobile'
-      },
-      {
-        checked: false,
-        value: 'web'
-      },
-      {
-        checked: false,
-        value: 'hybrid'
-      },
-      {
-        checked: false,
-        value: 'database'
-      },
-      {
-        checked: false,
-        value: 'console'
-      },
-      {
-        checked: false,
-        value: 'online'
-      }
-      ],
-      nhlteams: [],
-      loading: false
+      gameCount: 0,
+      nhlteams: []
     };
-  },
-  watch: {
-      page() {
-          console.log('page: '+this.page);
-      }
   },
   created(){
     this.$eventHub.$on('filterdata', this.clickTextlink);
-    this.getNHLData();
-    //this.getNHLSchedule(10);
+    this.getTeam();
   },
   mounted() {
-    // this.getfilteredData();
-    
+  
   },
   computed: {
-    selectedFilters: function() {
-      let filters = [];
-      let checkedFiters = this.stacks.filter(obj => obj.checked);
-      checkedFiters.forEach(element => {
-        filters.push(element.value);
-      });
-      return filters;
+    theselectedteam: function(){
+        return this.$store.state.teamselectedid
     }
   },
   methods: {
-    ...mapMutations(['CHANGE_TEAM_SELECTED']),
-    ...mapActions(['changeTeamSelected']),
+    ...mapMutations(['CHANGE_TEAM_SELECTED', 'CHANGE_TEAM_NAME']),
+    ...mapActions(['changeTeamSelected', 'changeTeamName']),
     
     changetheteamselected(id){
       this.changeTeamSelected(id);
     },
-    async getNHLData(){
-      console.log(this.theteamid);
-      const response = await nhlService.getAllTeams()
-      this.nhlteams = response.data.teams
+    changetheteamname(id){
+      this.changeTeamName(id);
     },
-    clickTextlink(url, teamid){
-      // console.log('this work?');
-      // console.log('thedata is: ' + thedata);
-      // this.filteredData = thedata;
-      // console.log('this.filteredData is: ' + this.filteredData)
-
-      console.log('teamselectpage url is: ' + url);
-      console.log('teamselectpage teamid is: ' + teamid);
-
+    async getTeam(id){
+        console.log(typeof(id));
+        if(isNaN(id)){
+            console.log('getTeam() in TeamSelectPage this.theselectedteam is: ' + this.theselectedteam);
+            const response = await nhlService.getAllTeams(this.theselectedteam)
+            this.nhlteams = response.data
+        }
+        else {
+            console.log('matchup property is a number')
+            const response = await nhlService.getAllTeams(id)
+            this.nhlteams = response.data
+        }
+    },
+    gotoNextTeam(nextgame = false){
+        if(nextgame == false){
+            if(this.gameCount == 0){
+                //do nothing
+            }else{
+                //go to previous game
+                this.gameCount--;
+            }
+        }
+        else if(nextgame == true)
+        {
+            if(this.gameCount == 81){
+                //do nothing
+            }else{
+                //go to the next game
+                this.gameCount++;
+            }
+        }
+        this.getTeam(this.$store.state.teamselectedid[this.gameCount]);
+    },
+    fillcolor(e){
+      console.log(e.target);
+      // TweenMax.to(e.target, 1, {'-webkit-filter':'grayscale(0%)',filter: 'grayscale(0%)'});
+       //TweenMax.to(e.target, 1, {'-webkit-filter':'grayscale(100%)',filter: 'grayscale(100%)'});
+       TweenMax.to(e.target, .2, {css: {opacity: 1, 'filter': 'grayscale(0%)','-webkit-filter': 'grayscale(0%)'}, ease:Power4.easeIn})
+      //TweenMax.to(e.target, .5, {x:'-20px', autoAlpha:0, ease:Expo.easeOut});
+            
+    },
+    emptycolor(e){
+      console.log('e is: ' + e.target);
+      TweenMax.to(e.target, .2, {css: {opacity: .2, 'filter': 'grayscale(90%)','-webkit-filter': 'grayscale(90%)'}, ease:Power4.easeOut})
+      
+    },
+    clickTextlink(url, teamid, teamname){
       this.changetheteamselected(teamid);
-     router.push(url);
+      this.changetheteamname(teamname);
+      router.push(url);
     }
   }
 };
@@ -141,10 +118,13 @@ export default {
 
 @import "../../node_modules/uikit3-extra-widths/uikit3/width-ex";
 @import "../styles/styles.scss";
-//@import "../../node_modules/bootstrap/scss/bootstrap.scss";
 
-
-.the-items:hover{
+.imagecontainer{
+  -webkit-filter:grayscale(90%);
+  filter:grayscale(90%);
+  opacity:.4;
+}
+.imagecontainer:hover{
   cursor:pointer;
 }
 .the-cards{
@@ -160,18 +140,13 @@ export default {
 }
 
   #child {
-    // width: 60vw;
     width: 700px;
     height: 100%;
-    /* background: -webkit-linear-gradient(left top, red, blue); */
-    /* Safari 5.1 to 6.0 */
-    /* background: -o-linear-gradient(bottom right, red, blue); */
-    /* Opera 11.1 to 12.0 */
-    /* background: -moz-linear-gradient(bottom right, red, blue); */
-    /* Firefox 3.6 to 15 */
-    /* background: linear-gradient(to bottom right, red, blue); */
   }
 
+.teamname{
+  color: $primary;
+}
 .search-wrapper{
   /* margin-left:75px; */
 }

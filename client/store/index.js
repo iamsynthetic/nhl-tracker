@@ -5,25 +5,18 @@ Vue.use(Vuex)
 
 const state = {
   count: 0,
-  title: 'NHL stats and stuff',
-  teamselectedid: 0,
+  teamselectedid: "0",
+  selectedfranchiseid: "0",
+  teamname: '',
   hometeamid: '10',
   awayteamid: '1',
   gamenumber: 0,
   matchupdate: '1',
   matchgamepk: '000000000',
-  gamepks: [],
-  links: [
-    'http://www.google.com',
-    'http://www.yahoo.ca',
-    'http://www.bing.com'
-  ]
+  gamepks: []
 }
 
 const getters = {
-  countLinks: state => {
-    return state.links.length
-  },
   checkhometeamid: state => {
     return state.hometeamid
   },
@@ -42,8 +35,14 @@ const mutations = {
   REMOVE_ALL: (state) => {
     state.links = []
   },
-  CHANGE_TEAM_SELECTED: (stat, newteamselectedid) => {
+  CHANGE_TEAM_SELECTED: (state, newteamselectedid) => {
     state.teamselectedid = newteamselectedid
+  },
+  CHANGE_TEAM_NAME: (state, newteamnameid) => {
+    state.teamname = newteamnameid
+  },
+  CHANGE_SELECTED_FRANCHISE: (state, newselectedfranchiseid) => {
+    state.selectedfranchiseid = newselectedfranchiseid
   },
   CHANGE_HOME_TEAM: (state, newhometeamid) => {
     state.hometeamid = newhometeamid
@@ -64,6 +63,10 @@ const mutations = {
   ADD_GAMEPKS: (state, newgamepks) => {
     console.log('add_gamepks mutation newgamepks is: ' + newgamepks);
     state.gamepks.push(newgamepks)
+  },
+  EMPTY_GAMEPKS: (state) => {
+    console.log('empty_gamepks mutation nogamepks');
+    state.gamepks = []
   }
 }
 
@@ -81,6 +84,12 @@ const actions = {
   },
   changeTeamSelected: (context, id) => {
     context.commit('CHANGE_TEAM_SELECTED', id)
+  },
+  changeTeamName: (context, id) => {
+    context.commit('CHANGE_TEAM_NAME', id)
+  },
+  changeSelectedFranchise: (context, id) => {
+    context.commit('CHANGE_SELECTED_FRANCHISE', id)
   },
   changeHomeTeam: (context, id) => {
     context.commit('CHANGE_HOME_TEAM', id)
@@ -101,25 +110,11 @@ const actions = {
   fillGamePks: (context, id) => {
     console.log('in store fillGamePks action id is: ' + id);
     context.commit('ADD_GAMEPKS', id)
+  },
+  emptyGamePks: (context) => {
+    console.log('in store emptyGamePks action');
+    context.commit('EMPTY_GAMEPKS')
   }
-  // changeHomeTeam({commit}){
-  //   return new Promise((resolve, reject) => {
-  //     commit('CHANGE_HOME_TEAM')
-  //     resolve()
-  //   })
-  // },
-  // changeAwayTeam({commit}){
-  //   return new Promise((resolve, reject) => {
-  //     commit('CHANGE_AWAY_TEAM')
-  //     resolve()
-  //   })
-  // },
-  // changeMatchup({commit}){
-  //   return new Promise((resolve, reject) => {
-  //     commit('CHANGE_MATCHUP_TEAM')
-  //     resolve()
-  //   })
-  // }
 }
 
 const store = new Vuex.Store({
