@@ -13,6 +13,7 @@ const state = {
   gamenumber: 0,
   matchupdate: '1',
   matchgamepk: '000000000',
+  pagenumber: "1",
   gamepks: []
 }
 
@@ -22,6 +23,9 @@ const getters = {
   },
   checkawayteamid: state => {
     return state.awayteamid
+  },
+  checkpagenumber: state => {
+    return state.pagenumber
   }
 }
 
@@ -67,6 +71,9 @@ const mutations = {
   EMPTY_GAMEPKS: (state) => {
     console.log('empty_gamepks mutation nogamepks');
     state.gamepks = []
+  },
+  CHANGE_PAGENUMBER: (state, newpagenumber) => {
+    state.pagenumber = newpagenumber
   }
 }
 
@@ -114,6 +121,10 @@ const actions = {
   emptyGamePks: (context) => {
     console.log('in store emptyGamePks action');
     context.commit('EMPTY_GAMEPKS')
+  },
+  changePagenumber: (context, id) => {
+    console.log('changePagenumber id is: ' + id);
+    context.commit('CHANGE_PAGENUMBER', id)
   }
 }
 

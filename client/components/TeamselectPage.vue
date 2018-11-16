@@ -19,8 +19,8 @@
 
 <script>
 
-import axios from 'axios';
-import itemCard from './itemCard';
+import axios from 'axios'
+import itemCard from './itemCard'
 import router from '../router'
 import nhlService from '../services/nhlService'
 import { mapState, mapMutations, mapActions } from 'vuex'
@@ -40,9 +40,10 @@ export default {
   created(){
     this.$eventHub.$on('filterdata', this.clickTextlink);
     this.getTeam();
+    this.changethepagenumber(1);
   },
   mounted() {
-  
+    
   },
   computed: {
     theselectedteam: function(){
@@ -50,15 +51,21 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(['CHANGE_TEAM_SELECTED', 'CHANGE_TEAM_NAME']),
-    ...mapActions(['changeTeamSelected', 'changeTeamName']),
+    ...mapMutations(['CHANGE_TEAM_SELECTED', 'CHANGE_TEAM_NAME', 'CHANGE_PAGENUMBER']),
+    ...mapActions(['changeTeamSelected', 'changeTeamName', 'changePagenumber']),
     
     changetheteamselected(id){
       this.changeTeamSelected(id);
     },
+
     changetheteamname(id){
       this.changeTeamName(id);
     },
+
+    changethepagenumber(id){
+      this.changePagenumber(id);
+    },
+
     async getTeam(id){
         console.log(typeof(id));
         if(isNaN(id)){
@@ -72,6 +79,7 @@ export default {
             this.nhlteams = response.data
         }
     },
+
     gotoNextTeam(nextgame = false){
         if(nextgame == false){
             if(this.gameCount == 0){
@@ -92,22 +100,24 @@ export default {
         }
         this.getTeam(this.$store.state.teamselectedid[this.gameCount]);
     },
+
     fillcolor(e){
       console.log(e.target);
       // TweenMax.to(e.target, 1, {'-webkit-filter':'grayscale(0%)',filter: 'grayscale(0%)'});
        //TweenMax.to(e.target, 1, {'-webkit-filter':'grayscale(100%)',filter: 'grayscale(100%)'});
        TweenMax.to(e.target, .2, {css: {opacity: 1, 'filter': 'grayscale(0%)','-webkit-filter': 'grayscale(0%)'}, ease:Power4.easeIn})
       //TweenMax.to(e.target, .5, {x:'-20px', autoAlpha:0, ease:Expo.easeOut});
-            
     },
+
     emptycolor(e){
       console.log('e is: ' + e.target);
       TweenMax.to(e.target, .2, {css: {opacity: .2, 'filter': 'grayscale(90%)','-webkit-filter': 'grayscale(90%)'}, ease:Power4.easeOut})
-      
     },
+
     clickTextlink(url, teamid, teamname){
       this.changetheteamselected(teamid);
       this.changetheteamname(teamname);
+      this.changethepagenumber(2);
       router.push(url);
     }
   }

@@ -2,12 +2,6 @@
     <v-content class="schedulepage">
       <v-container class="vcontainer">
         <v-layout row wrap class="vlayout">
-          <v-flex xs12>
-            <ul class="breadcrumb">
-              <li><a @click="clickTextLink('/teamselect')">teams</a></li>
-              <li>schedule</li>
-            </ul>
-          </v-flex>
           <v-flex class="logocontainer" xs12 lg3>
             <img class="thelogo" :src="`../../static/logos/${theteamid}.png`" alt="">
           </v-flex>
@@ -200,8 +194,8 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(['CHANGE_HOME_TEAM', 'CHANGE_AWAY_TEAM', 'CHANGE_GAME_NUMBER','CHANGE_MATCHUP', 'CHANGE_MATCHGAMEPK', 'ADD_GAMEPKS', 'EMPTY_GAMEPKS']),
-    ...mapActions(['changeHomeTeam', 'changeAwayTeam', 'changeGamenumber','changeMatchup', 'changeMatchgamepk', 'fillGamePks', 'emptyGamePks']),
+    ...mapMutations(['CHANGE_PAGENUMBER', 'CHANGE_HOME_TEAM', 'CHANGE_AWAY_TEAM', 'CHANGE_GAME_NUMBER','CHANGE_MATCHUP', 'CHANGE_MATCHGAMEPK', 'ADD_GAMEPKS', 'EMPTY_GAMEPKS']),
+    ...mapActions(['changePagenumber', 'changeHomeTeam', 'changeAwayTeam', 'changeGamenumber','changeMatchup', 'changeMatchgamepk', 'fillGamePks', 'emptyGamePks']),
     
     changethehometeam(id){
       this.changeHomeTeam(id);
@@ -232,6 +226,10 @@ export default {
     emptythegamepks(){
       console.log('emptygamepks');
       this.emptyGamePks()
+    },
+    
+    changethepagenumber(id){
+      this.changePagenumber(id);
     },
 
     async getNHLData(){
@@ -310,11 +308,13 @@ export default {
       this.changetheawayteam(awayteamid);
       this.changethematchup(matchupdate);
       this.changethematchgamepk(matchgamepk);
+      this.changethepagenumber(3);
      router.push(url);
     },
-    clickTextLink(url){
-      router.push(url);
-    },
+    // clickTextLink(url){
+    //   this.changethepagenumber(1);
+    //   router.push(url);
+    // },
     onScroll (e) {
       this.offsetTop = e.target.scrollTop
     }

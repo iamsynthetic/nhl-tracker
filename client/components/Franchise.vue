@@ -1,12 +1,6 @@
 <template>
     <v-content class="franchisepage">
         <v-container class="vcontainer" grid-list-md>
-            <ul class="breadcrumb">
-                <li><a @click="clickTextLink('/teamselect')">teams</a></li>
-                <li><a @click="clickTextLink('/schedule')">schedule</a></li>
-                <li><a @click="clickTextLink('/matchup')">matchup</a></li>
-                <li>franchise</li>
-            </ul>
             <v-layout v-if="franchisestats.team" row wrap>
                 <v-flex class="bg-secondary" xs1 text-xs-center>
                     <v-btn fab dark small color="primary" @click="gotoNextMatchup(false)">
@@ -16,7 +10,7 @@
                 <v-flex class="bg-primary" xs10>
                     <v-layout row wrap>
                         <v-flex class="bg-primary" xs12 md5 text-xs-center>
-                            <a><img class="logo" :src="`../../static/logos/${franchisestats.team.id}.png`" alt="" @click="clickTextLink('/franchise/', matchboxscore.teams.away.team.id)"></a>
+                            <a><img class="logo" :src="`../../static/logos/${franchisestats.team.id}.png`" alt=""></a>
                             <v-layout row wrap>
                                 <v-flex class="bg-secondary" xs12>
                                     <p>{{ franchisestats.team.name }}</p>
@@ -142,14 +136,6 @@ export default {
             console.log('MATCHUP - goToNextMatchup this.theselectedteam is: ' + this.theselectedfranchise);
             console.log(this.$store.state.gamepks[this.gameCount])
             this.getNHLTeamSeasonStats(this.$store.state.selectedfranchiseid);
-        },
-        clickTextLink(url){
-            this.url = url;
-            //this.teamid = teamid;
-            //console.log('click function - this.teamid is: ' + this.teamid);
-
-            router.push(url)
-            //console.log('this page is: ' + this.name + ' url is: ' + url)
         }
     },
 }

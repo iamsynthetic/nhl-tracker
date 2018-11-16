@@ -1,84 +1,80 @@
 <template>
     <v-content class="matchuppage">
         <v-container class="vcontainer">
-            <v-layout row wrap class="vlayout">
+            <v-layout row wrap>
+                <v-flex class="title" xs12>
+                    <p>{{ theteamselected }}</p>
+                </v-flex>
                 <v-flex xs12>
-                    <ul class="breadcrumb">
-                        <li><a @click="clickTextLink('/teamselect')">teams</a></li>
-                        <li><a @click="clickTextLink('/schedule')">schedule</a></li>
-                        <li>matchup</li>
-                    </ul>
-                </v-flex>
-                <v-flex class="bg-secondary" xs1 text-xs-center>
-                    <v-btn fab dark small color="primary" @click="gotoNextMatchup(false)">
-                        <v-icon dark>remove</v-icon>
-                    </v-btn>
-                </v-flex>
-                <v-flex class="bg-primary" xs10>
-                    <v-layout v-if="matchboxscore.teams" row wrap>
-                        <v-flex class="bg-primary" xs12 md5 text-xs-center>
+                    <v-layout class="matchup-background" v-if="matchboxscore.teams" row wrap>
+                        <v-flex xs12 my-auto md4 text-xs-center>
                             <a><img class="logo" :src="`../../static/logos/${matchboxscore.teams.away.team.id}.png`" alt="" @click="gotoFranchise(`/franchise/${matchboxscore.teams.away.team.id}`, matchboxscore.teams.away.team.id)"></a>
                             <v-layout row wrap>
-                                <v-flex class="bg-secondary" xs12>
+                                <v-flex xs12>
                                     <p>{{ matchboxscore.teams.away.team.name }}</p>
                                 </v-flex>
                             </v-layout>
                         </v-flex>
-                        <v-flex class="bg-error" xs12 md2 text-xs-center>
-                            <p>VS</p>
+                        <v-flex xs12 md4 mt-auto mb-auto text-xs-center>
+                            <v-layout>
+                                <v-flex xs3 text-xs-center>
+                                    <p class="statresult">{{ awayteamstats.goals }}</p>
+                                    <p class="statresult">{{ awayteamstats.shots }}</p>
+                                    <p class="statresult">{{ awayteamstats.powerPlayGoals }}/{{ awayteamstats.powerPlayOpportunities }}</p>
+                                    <p class="statresult">{{ awayteamstats.powerPlayPercentage }}</p>
+                                    <p class="statresult">{{ awayteamstats.powerPlayPercentage }}</p>
+                                    <p class="statresult">{{ awayteamstats.faceOffWinPercentage }}</p>
+                                    <p class="statresult">{{ awayteamstats.blocked }}</p>
+                                    <p class="statresult">{{ awayteamstats.takeaways }}</p>
+                                    <p class="statresult">{{ awayteamstats.giveaways }}</p>
+                                    <p class="statresult">{{ awayteamstats.hits }}</p>
+                                </v-flex>
+                                <v-flex xs6 text-xs-center>
+                                    <p class="statresult">GOALS</p>
+                                    <p class="statresult">SHOTS</p>
+                                    <p class="statresult">PIM</p>
+                                    <p class="statresult">PP</p>
+                                    <p class="statresult">PP % </p>
+                                    <p class="statresult">FO %</p>
+                                    <p class="statresult">BLOCKS</p>
+                                    <p class="statresult">TAKEAWAYS</p>
+                                    <p class="statresult">GIVEAWAYS</p>
+                                    <p class="statresult">HITS</p> 
+                                </v-flex>
+                                <v-flex xs3 text-xs-center>
+                                    <p class="statresult">{{ hometeamstats.goals }}</p>
+                                    <p class="statresult">{{ hometeamstats.shots }}</p>
+                                    <p class="statresult">{{ hometeamstats.powerPlayGoals }}/{{ hometeamstats.powerPlayOpportunities }}</p>
+                                    <p class="statresult">{{ hometeamstats.powerPlayPercentage }}</p>
+                                    <p class="statresult">{{ hometeamstats.powerPlayPercentage }}</p>
+                                    <p class="statresult">{{ hometeamstats.faceOffWinPercentage }}</p>
+                                    <p class="statresult">{{ hometeamstats.blocked }}</p>
+                                    <p class="statresult">{{ hometeamstats.takeaways }}</p>
+                                    <p class="statresult">{{ hometeamstats.giveaways }}</p>
+                                    <p class="statresult">{{ hometeamstats.hits }}</p>
+                                </v-flex>
+                            </v-layout>
+                            <v-layout class="nextprev-button-layout"> 
+                                <v-flex xs4>
+                                    <v-btn depressed small color="#FFC107" @click="gotoNextMatchup(false)">last game</v-btn>
+                                </v-flex>
+                                <v-flex class="my-auto" xs4>
+                                    <p class="my-auto">{{ thegamenumber }} / 82</p>
+                                </v-flex>
+                                <v-flex xs4>
+                                    <v-btn depressed small color="#FFC107" @click="gotoNextMatchup(true)">next game</v-btn>
+                                </v-flex>
+                            </v-layout>
                         </v-flex>
-                        <v-flex class="bg-success" xs12 md5 text-xs-center>
+                        <v-flex xs12 my-auto md4 text-xs-center>
                             <a><img class="logo" :src="`../../static/logos/${matchboxscore.teams.home.team.id}.png`" alt="" @click="gotoFranchise(`/franchise/${matchboxscore.teams.home.team.id}`, matchboxscore.teams.home.team.id)"></a>
                             <v-layout row wrap>
-                                <v-flex class="bg-secondary" xs12>
+                                <v-flex xs12>
                                     <p>{{ matchboxscore.teams.home.team.name }}</p>
                                 </v-flex>
                             </v-layout>
                         </v-flex>
                     </v-layout>
-                    <v-layout row wrap text-xs-center>
-                        <v-flex class="bg-info" xs12 md5>
-                            <p>{{ awayteamstats.goals }}</p>
-                            <p>{{ awayteamstats.shots }}</p>
-                            <p>{{ awayteamstats.powerPlayGoals }}/{{ awayteamstats.powerPlayOpportunities }}</p>
-                            <p>{{ awayteamstats.powerPlayPercentage }}</p>
-                            <p>{{ awayteamstats.powerPlayPercentage }}</p>
-                            <p>{{ awayteamstats.faceOffWinPercentage }}</p>
-                            <p>{{ awayteamstats.blocked }}</p>
-                            <p>{{ awayteamstats.takeaways }}</p>
-                            <p>{{ awayteamstats.giveaways }}</p>
-                            <p>{{ awayteamstats.hits }}</p>
-                        </v-flex>
-                        <v-flex class="bg-warning" xs12 md2>
-                            <p>GOALS</p>
-                            <p>SHOTS</p>
-                            <p>PIM</p>
-                            <p>PP</p>
-                            <p>PP % </p>
-                            <p>FO %</p>
-                            <p>BLOCKS</p>
-                            <p>TAKEAWAYS</p>
-                            <p>GIVEAWAYS</p>
-                            <p>HITS</p>
-                        </v-flex>
-                        <v-flex class="bg-info" xs12 md5>
-                            <p>{{ hometeamstats.goals }}</p>
-                            <p>{{ hometeamstats.shots }}</p>
-                            <p>{{ hometeamstats.powerPlayGoals }}/{{ hometeamstats.powerPlayOpportunities }}</p>
-                            <p>{{ hometeamstats.powerPlayPercentage }}</p>
-                            <p>{{ hometeamstats.powerPlayPercentage }}</p>
-                            <p>{{ hometeamstats.faceOffWinPercentage }}</p>
-                            <p>{{ hometeamstats.blocked }}</p>
-                            <p>{{ hometeamstats.takeaways }}</p>
-                            <p>{{ hometeamstats.giveaways }}</p>
-                            <p>{{ hometeamstats.hits }}</p>
-                        </v-flex>
-                    </v-layout>
-                </v-flex>
-                <v-flex class="bg-secondary" xs1 text-xs-center>
-                    <v-btn fab dark small color="primary" @click="gotoNextMatchup(true)">
-                        <v-icon dark>add</v-icon>
-                    </v-btn>
                 </v-flex>
             </v-layout>
         </v-container>
@@ -98,6 +94,7 @@ export default {
             matchboxscore: [],
             hometeamstats: [],
             awayteamstats: [],
+            theteamselected: '',
             items: [
                 {
                     text: 'teams',
@@ -125,6 +122,7 @@ export default {
     created(){
         this.getMatchup();
         this.setGameCount();
+        this.getTheTeam();
     },
     beforeDestroy(){
 
@@ -145,11 +143,14 @@ export default {
         },
         theselectedteam: function(){
             return this.$store.state.teamselectedid
+        },
+        thegamenumber: function(){
+            return this.gameCount + 1
         }
     },
     methods: {
-        ...mapMutations(['CHANGE_TEAM_SELECTED', 'CHANGE_SELECTED_FRANCHISE']),
-        ...mapActions(['changeTeamSelected', 'changeSelectedFranchise']),
+        ...mapMutations(['CHANGE_PAGENUMBER', 'CHANGE_TEAM_SELECTED', 'CHANGE_SELECTED_FRANCHISE']),
+        ...mapActions(['changePagenumber', 'changeTeamSelected', 'changeSelectedFranchise']),
 
         changetheteamselected(id){
             this.changeTeamSelected(id);
@@ -159,6 +160,13 @@ export default {
         },
         setGameCount(){
             this.gameCount = this.$store.state.gamenumber;
+        },
+        changethepagenumber(id){
+            this.changePagenumber(id);
+        },
+        async getTheTeam(){
+            const response = await nhlService.getATeam(this.theselectedteam);
+            this.theteamselected = response.data.teams[0].name
         },
         async getMatchup(matchup){
             console.log(typeof(matchup));
@@ -217,16 +225,8 @@ export default {
             this.clickTextLink(url)
         },
         clickTextLink(url){
-        //     function doRouter(){
-        //         router.push(url)
-        //         console.log('this page is: ' + this.name + ' url is: ' + url)
-        //     }
-        // }
             this.url = url;
-            //this.teamid = teamid;
-            //console.log('click function - this.teamid is: ' + this.teamid);
-
-            //router.push(url)
+            this.changethepagenumber(4);
             router.push(url)
             console.log('this page is: ' + this.teamid + ' url is: ' + url)
         }
@@ -247,10 +247,20 @@ a {
   height: calc(100vh - 60px);
 }
 
+.breadcrumb-container{
+    background-color:$secondary;
+    //max-height:100px;
+}
+
+.title{
+    //max-height:800px;
+    background-color:$primary;
+}
 ul.breadcrumb {
     padding: 0px 0px;
     margin-top:30px;
     list-style: none;
+    //background-color:$primary;
 }
 ul.breadcrumb li {
     display: inline;
@@ -270,9 +280,6 @@ ul.breadcrumb li a {
 ul.breadcrumb li a:hover {
     
     text-decoration: underline;
-}
-.vlayout{
-  height: calc(100vh - 60px);
 }
 .bg-primary{ 
     background-color:$primary
@@ -295,8 +302,23 @@ ul.breadcrumb li a:hover {
 .bg-error{ 
     background-color: $error;
 }
+
+.matchup-background{
+    //background-color:$dark;
+}
+.statresult{
+    margin:4px;
+    padding:4px;
+    background-color:$dark;
+    color:$light;
+}
+.nextprev-button-layout{
+    margin-top:40px;
+}
 .logo{
-    width:28em;
+    // width:28em;
+    width:100vw;
+    height:auto;
 }
 
 @media only screen and (min-width: 320px){
@@ -357,6 +379,12 @@ ul.breadcrumb li a:hover {
     align-items:center;
     height: calc(100vh - 60px);
   }
+  .logo{
+    // width:28em;
+    //width:100vw;
+    width:90%;
+    height:auto;
+    }
 }
 
 @media only screen and (min-width: 1400px){

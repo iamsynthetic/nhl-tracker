@@ -1,12 +1,14 @@
 <template>
   <div id="app">
     <app-header></app-header>
+    <app-breadcrumb class="bread"></app-breadcrumb>
     <router-view></router-view>
   </div>
 </template>
 
 <script>
 import Header from './Header.vue'
+import Breadcrumb from './Breadcrumb.vue'
 
 export default {
   name: 'App',
@@ -21,6 +23,7 @@ export default {
   },
   components: {
     'appHeader': Header,
+    'appBreadcrumb': Breadcrumb
     //Stats
   },
   methods: {
@@ -40,5 +43,7 @@ body {
   margin-top: 0px;
   height:100%;
   //background-color:$info;
+}
+.bread{
 }
 </style>
