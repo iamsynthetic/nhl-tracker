@@ -1,7 +1,7 @@
 <template>
     <v-content class="schedulepage">
-      <v-container class="vcontainer">
-        <v-layout row wrap class="vlayout">
+      <v-container>
+        <v-layout class="vlayout" row wrap>
           <v-flex class="logocontainer" xs12 lg3>
             <img class="thelogo" :src="`../../static/logos/${theteamid}.png`" alt="">
           </v-flex>
@@ -337,7 +337,7 @@ export default {
   //display:flex;
   //justify-content:center;
   //align-items:center;
-  //height: calc(100vh - 60px);
+  height: calc(100vh);
 }
 
 a {
@@ -348,7 +348,7 @@ a {
   //max-height: 92vh;
   //max-width:70vw;
   padding:0;
-  height: calc(100vh - 60px);
+  height: calc(100vh);
 }
 
 ul.breadcrumb {
@@ -381,7 +381,8 @@ ul.breadcrumb li a:hover {
   height:60vh !important;
 }
 .vlayout{
-  height: calc(100vh - 60px);
+  margin-top:100px;
+  height: calc(100vh - 248px);
 }
 .logocontainer{
   display:flex;

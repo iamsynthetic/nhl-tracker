@@ -1,15 +1,16 @@
 <template>
-    <div my-auto class="thebreadcrumb">
-        <ul my-auto v-if="this.$store.getters.checkpagenumber === 2" class="breadcrumb">
+    <div class="thebreadcrumb">
+        <p>{{ this.$store.getters.checkpagenumber }}</p>
+        <ul v-if="this.$store.getters.checkpagenumber === 2" class="breadcrumb">
             <li><a @click="clickTextLink('/teamselect')">teams</a></li>
             <li>schedule</li>
         </ul>
-        <ul my-auto v-else-if="this.$store.getters.checkpagenumber === 3" class="breadcrumb">
+        <ul v-if="this.$store.getters.checkpagenumber === 3" class="breadcrumb">
             <li><a @click="clickTextLink('/teamselect')">teams</a></li>
             <li><a @click="clickTextLink('/schedule')">schedule</a></li>
             <li>matchup</li>
         </ul>
-        <ul my-auto v-else-if="this.$store.getters.checkpagenumber === 4" class="breadcrumb">
+        <ul v-if="this.$store.getters.checkpagenumber === 4" class="breadcrumb">
             <li><a @click="clickTextLink('/teamselect')">teams</a></li>
             <li><a @click="clickTextLink('/schedule')">schedule</a></li>
             <li><a @click="clickTextLink('/matchup')">matchup</a></li>
@@ -88,14 +89,15 @@ export default {
     @import '../styles/styles.scss';
 
     .thebreadcrumb{
-        height:60px;
+        height:100px;
         margin-left:100px;
         background-color:$info;
     }
 
     ul.breadcrumb {
     padding: 0px 0px;
-    margin-top:30px;
+    //margin-top:30px;
+    padding-top:50px;
     list-style: none;
     }
     ul.breadcrumb li {

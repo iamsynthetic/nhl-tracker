@@ -1,9 +1,9 @@
 <template>
     <v-content class="matchuppage">
-        <v-container class="vcontainer">
-            <v-layout row wrap>
-                <v-flex class="title" xs12>
-                    <p>{{ theteamselected }}</p>
+        <v-container>
+            <v-layout class="vlayout" row wrap>
+                <v-flex xs12 my-auto text-xs-center>
+                    <p class="team-title">Tonight's matchup</p>
                 </v-flex>
                 <v-flex xs12>
                     <v-layout class="matchup-background" v-if="matchboxscore.teams" row wrap>
@@ -252,10 +252,19 @@ a {
     //max-height:100px;
 }
 
-.title{
+.team-title{
     //max-height:800px;
-    background-color:$primary;
+    //background-color:$primary;
+    color: $primary;
+    font-size:3rem;
 }
+
+
+
+.vlayout{
+  height: calc(100vh - 148px);
+}
+
 ul.breadcrumb {
     padding: 0px 0px;
     margin-top:30px;

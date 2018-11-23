@@ -1,7 +1,10 @@
 <template>
   <div id="app">
-    <app-header></app-header>
-    <app-breadcrumb class="bread"></app-breadcrumb>
+    <div v-if="this.$store.getters.checkpagenumber === 1">
+    </div>
+    <div v-if="this.$store.getters.checkpagenumber >= 2" class="breadcrumb">
+        <app-breadcrumb class="bread"></app-breadcrumb>
+    </div>
     <router-view></router-view>
   </div>
 </template>

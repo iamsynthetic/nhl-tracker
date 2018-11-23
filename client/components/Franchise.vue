@@ -1,15 +1,36 @@
 <template>
     <v-content class="franchisepage">
-        <v-container class="vcontainer" grid-list-md>
-            <v-layout v-if="franchisestats.team" row wrap>
+        <v-container grid-list-md>
+            <v-layout class="vlayout" v-if="franchisestats.team" row wrap>
                 <v-flex class="bg-secondary" xs1 text-xs-center>
-                    <v-btn fab dark small color="primary" @click="gotoNextMatchup(false)">
+                    <v-btn fab dark small color="primary" @click="gotoNextStat(false)">
                         <v-icon dark>remove</v-icon>
                     </v-btn>
                 </v-flex>
-                <v-flex class="bg-primary" xs10>
+                <v-flex xs10>
+                    <!-- <v-layout row wrap>
+                        <v-flex class="logocontainer" xs6 text-xs-center>
+                            <img class="thelogo" :src="`../../static/logos/${franchisestats.team.id}.png`" alt="">
+                        </v-flex>
+                        <v-flex class="textcontainer" xs6 text-xs-center>
+                            <p class="thetitle">{{franchisestats.team.name}}<br><span class="thesubtitle">2018 - 2019 season stats</span></p>
+                        </v-flex>
+                    </v-layout> -->
                     <v-layout row wrap>
-                        <v-flex class="bg-primary" xs12 md5 text-xs-center>
+                        <v-flex text-xs-center>
+                            <a><img class="logo" :src="`../../static/logos/${franchisestats.team.id}.png`" alt=""></a>
+                            <p class="team-title">{{ franchisestats.team.name }}</p>
+                            <p>stats - {{ franchisestats.stat }}</p>
+                            <p>ranks - {{ franchiserank.stat["wins"] }}</p>
+                            <p>{{ getstatname(1) }} is {{ getstat(1) }}</p>
+                            <p>GAMES PLAYED - {{ franchisestats.stat.gamesPlayed }}</p>
+                        </v-flex>
+                    </v-layout>
+                </v-flex>
+                
+                <!-- <v-flex class="bg-primary" xs10>
+                    <v-layout row wrap>
+                        <v-flex class="bg-primary" xs12 md5 my-auto text-xs-center>
                             <a><img class="logo" :src="`../../static/logos/${franchisestats.team.id}.png`" alt=""></a>
                             <v-layout row wrap>
                                 <v-flex class="bg-secondary" xs12>
@@ -49,9 +70,9 @@
                             <p>SAVE % - {{ franchisestats.stat.savePctg }}</p>
                         </v-flex>
                     </v-layout>
-                </v-flex>
+                </v-flex> -->
                 <v-flex class="bg-secondary" xs1 text-xs-center>
-                    <v-btn fab dark small color="primary" @click="gotoNextMatchup(true)">
+                    <v-btn fab dark small color="primary" @click="gotoNextStat(true)">
                         <v-icon dark>add</v-icon>
                     </v-btn>
                 </v-flex>
@@ -72,7 +93,9 @@ export default {
             franchise: [],
             franchisestats: [],
             franchiserank: [],
-            gameCount: 0
+            statCount: 0,
+            entriesmap: {},
+            objectkeynames: []
         }
     },
     mounted(){
@@ -106,6 +129,30 @@ export default {
                 this.franchise = response.data
                 this.franchisestats = response.data.stats[0].splits[0]
                 this.franchiserank = response.data.stats[1].splits[0]
+                const keys = Object.keys(response.data.stats[0].splits[0].stat)
+                const entries = Object.entries(response.data.stats[0].splits[0].stat)
+                this.entriesmap = new Map(Object.entries(response.data.stats[0].splits[0].stat))
+
+                console.log('keys is: ' + keys)
+                console.log('entries is: ' + entries)
+
+                for (const [key, count] of entries){
+                    console.log(`There are ${count} ${key}`)
+                    this.objectkeynames.push(key)
+                }
+
+                console.log('blah - ' + response.data.stats[1].splits[0].stat[1])
+                
+                console.log('entries map')
+                console.log('entries map - size: ' + this.entriesmap.size)
+                console.log('entries map - has wins: ' + this.entriesmap.has('wins'))
+                console.log('entries map - get wins: ' + this.entriesmap.get('wins'))
+                console.log('entries map - get wins: ' + this.entriesmap.get([1]))
+                
+                console.log('objectkeynames are: ' + this.objectkeynames)
+
+                console.log('entries map - get wins by objectkeyname array: ' + this.entriesmap.get(this.objectkeynames[1]))
+                console.log('entries map - get ' + this.objectkeynames[1] + ' by objectkeyname array son: ' + this.entriesmap.get(this.objectkeynames[1]))
             }
             else {
                 console.log('matchup property is a number')
@@ -115,22 +162,28 @@ export default {
                 this.franchiserank = response.data.stats[1].splits[0]
             }
         },
-        gotoNextMatchup(nextgame = false){
-            if(nextgame == false){
-                if(this.gameCount == 1){
+        getstatname(statname){
+            return this.objectkeynames[statname]
+        },
+        getstat(stat){
+            return this.entriesmap.get(this.objectkeynames[stat])
+        },
+        gotoNextStat(nextstat = false){
+            if(nextstat == false){
+                if(this.statCount == 1){
                     //do nothing
                 }else{
                     //go to previous game
-                    this.gameCount--;
+                    this.statCount--;
                 }
             }
-            else if(nextgame == true)
+            else if(nextstat == true)
             {
-                if(this.gameCount == 31){
+                if(this.statCount == 31){
                     //do nothing
                 }else{
                     //go to the next game
-                    this.gameCount++;
+                    this.statCount++;
                 }
             }
             console.log('MATCHUP - goToNextMatchup this.theselectedteam is: ' + this.theselectedfranchise);
@@ -145,31 +198,10 @@ export default {
 
 @import "../styles/styles.scss";
 
-ul.breadcrumb {
-    padding: 10px 12px;
-    list-style: none;
+.vlayout{
+  height: calc(100vh - 144px);
 }
-ul.breadcrumb li {
-    display: inline;
-    font-size: 14px;
-    // color: #b3d4fc;
-    color: rgba(0,0,0,.38);
-}
-ul.breadcrumb li+li:before {
-    padding-left: 9px;
-    padding-right:9px;
-    //color: #b3d4fc;
-    color: rgba(0,0,0,.38);
-    content: "\003e";
-}
-ul.breadcrumb li a {
-    color: #0275d8;
-    text-decoration: none;
-}
-ul.breadcrumb li a:hover {
-    
-    text-decoration: underline;
-}
+
 .bg-primary{ 
     background-color:$primary
 }
@@ -192,12 +224,12 @@ ul.breadcrumb li a:hover {
     background-color: $error;
 }
 .logo{
-    width:28em;
+    width:14rem;
 }
-
+.team-title{
+    font-size:3rem;
+}
 @media only screen and (max-width: 600px) {
-    .logo{
-        width:10em;
-    }
+    
 }
 </style>
