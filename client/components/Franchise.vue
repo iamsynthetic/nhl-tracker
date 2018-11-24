@@ -24,6 +24,8 @@
                             <p>ranks - {{ franchiserank.stat["wins"] }}</p>
                             <p>{{ getstatname(1) }} is {{ getstat(1) }}</p>
                             <p>GAMES PLAYED - {{ franchisestats.stat.gamesPlayed }}</p>
+                            <v-progress-linear background-color="pink lighten-3" color="pink lighten-1" v-model="gamesplayed"></v-progress-linear>
+                            
                         </v-flex>
                     </v-layout>
                 </v-flex>
@@ -42,32 +44,51 @@
                     <v-layout row wrap text-xs-center>
                         <v-flex class="bg-info" xs12 md5>
                             {{ franchisestats.stat }}
+                            
+                            overall game stats
+                            
                             <p>GAMES PLAYED - {{ franchisestats.stat.gamesPlayed }}</p>
                             <p>WINS - {{ franchisestats.stat.wins }}</p>
                             <p>LOSSES - {{ franchisestats.stat.losses }}</p>
                             <p>OVERTIME LOSSES - {{ franchisestats.stat.ot }}</p>
                             <p>POINTS - {{ franchisestats.stat.pts }}</p>
                             <p>POINT % - {{ franchisestats.stat.ptPctg }}</p>
+                            
+                            offensive stats
+
                             <p>GOALS PER GAME - {{ franchisestats.stat.goalsPerGame }}</p>
                             <p>GOALS AGAINST PER GAME - {{ franchisestats.stat.goalsAgainstPerGame }}</p>
+                            <p>SHOTS PER GAME - {{ franchisestats.stat.shotsPerGame }}</p>
+                            <p>SHOTS ALLOWED - {{ franchisestats.stat.shotsAllowed }}</p>
+                            
+                            shooting 
+
+                            <p>SHOOTING % - {{ franchisestats.stat.shootingPctg }}</p>
+                            <p>SAVE % - {{ franchisestats.stat.savePctg }}</p>
+                            
+                            special teams stats
+
                             <p>POWER PLAY % - {{ franchisestats.stat.powerPlayPercentage }}</p>
                             <p>POWER PLAY GOALS - {{ franchisestats.stat.powerPlayGoals }}</p>
                             <p>POWER PLAY GOALS AGAINST - {{ franchisestats.stat.powerPlayGoalsAgainst }}</p>
                             <p>POWER PLAYS - {{ franchisestats.stat.powerPlayOpportunities }}</p>
                             <p>PENALTY KILL % - {{ franchisestats.stat.penaltyKillPercentage }}</p>
-                            <p>SHOTS PER GAME - {{ franchisestats.stat.shotsPerGame }}</p>
-                            <p>SHOTS ALLOWED - {{ franchisestats.stat.shotsAllowed }}</p>
+                            
+                            draws
+
+                            <p>FACEOFFS TAKEN - {{ franchisestats.stat.faceOffsTaken }}</p>
+                            <p>FACEOFFS WON - {{ franchisestats.stat.faceOffsWon }}</p>
+                            <p>FACEOFFS LOST - {{ franchisestats.stat.faceOffsLost }}</p>
+                            <p>FACEOFF WIN % - {{ franchisestats.stat.faceOffWinPercentage }}</p>
+
+                            wins special stats
+
                             <p>WINS WHEN SCORED FIRST - {{ franchisestats.stat.winScoreFirst }}</p>
                             <p>WINS WHEN SCORED ON FIRST - {{ franchisestats.stat.winOppScoreFirst }}</p>
                             <p>WINS AFTER 1ST PERIOD LEAD - {{ franchisestats.stat.winLeadFirstPer }}</p>
                             <p>WINS AFTER 2ND PERIOD LEAD - {{ franchisestats.stat.winLeadSecondPer }}</p>
                             <p>WINS WHEN OUTSHOOT OPPONENT - {{ franchisestats.stat.winOutshootOpp }}</p>
-                            <p>FACEOFFS TAKEN - {{ franchisestats.stat.faceOffsTaken }}</p>
-                            <p>FACEOFFS WON - {{ franchisestats.stat.faceOffsWon }}</p>
-                            <p>FACEOFFS LOST - {{ franchisestats.stat.faceOffsLost }}</p>
-                            <p>FACEOFF WIN % - {{ franchisestats.stat.faceOffWinPercentage }}</p>
-                            <p>SHOOTING % - {{ franchisestats.stat.shootingPctg }}</p>
-                            <p>SAVE % - {{ franchisestats.stat.savePctg }}</p>
+                            
                         </v-flex>
                     </v-layout>
                 </v-flex> -->
@@ -95,7 +116,8 @@ export default {
             franchiserank: [],
             statCount: 0,
             entriesmap: {},
-            objectkeynames: []
+            objectkeynames: [],
+            gamesplayed: ""
         }
     },
     mounted(){
@@ -132,7 +154,7 @@ export default {
                 const keys = Object.keys(response.data.stats[0].splits[0].stat)
                 const entries = Object.entries(response.data.stats[0].splits[0].stat)
                 this.entriesmap = new Map(Object.entries(response.data.stats[0].splits[0].stat))
-
+                this.gamesplayed = String((Number(response.data.stats[0].splits[0].stat.gamesPlayed) / 82) * 100)
                 console.log('keys is: ' + keys)
                 console.log('entries is: ' + entries)
 
@@ -228,6 +250,9 @@ export default {
 }
 .team-title{
     font-size:3rem;
+}
+.v-progress-linear{
+    margin: 1rem
 }
 @media only screen and (max-width: 600px) {
     
